@@ -1,0 +1,16 @@
+{
+  "name": "otis/ecommerce-2026",
+  "description": "built an ecommerce for learning using js, php and css",
+  "type": "project",
+  "autoload": {
+    "psr-4": {
+      "App": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "kenneth"
+    }
+  ],
+  "require": {}
+}
