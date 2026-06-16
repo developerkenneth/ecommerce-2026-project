@@ -1,4 +1,7 @@
 <?php
+
+use App\Utilities\Helper;
+
 $pageTitle = "register"
 
 ?>
@@ -9,14 +12,25 @@ $pageTitle = "register"
 <div class="form-container">
     <h1>Create Account</h1>
 
-    <form method="post" action="">
-        <input type="text" name="username" placeholder="Username" />
 
-        <input type="email" name="email" placeholder="Email" />
+    <?php if (!empty($errors)) : ?>
+        <div class="error">
+            <ul>
+                <?php foreach ($errors as $error): ?>
+                    <li><?= $error; ?></li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    <?php endif; ?>
+
+    <form method="post" action="">
+        <input type="text" name="name" value="<?= Helper::getOld("name"); ?>" placeholder="Name" />
+
+        <input type="email" value="<?= Helper::getOld("email"); ?>" name="email" placeholder="Email" />
 
         <input type="password" name="password" placeholder="Password" />
 
-        <input type="password" name="confirm_password" placeholder="Password" />
+        <input type="password" name="confirm_password" placeholder="Confirm Password" />
 
         <button type="submit">Register</button>
     </form>
