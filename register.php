@@ -1,8 +1,9 @@
 <?php
+require_once __DIR__ . "/vendor/autoload.php";
 
 use App\Utilities\Helper;
 
-$pageTitle = "register"
+$pageTitle = "register";
 
 ?>
 <?php include_once "./components/guest/head.php" ?>
@@ -20,6 +21,12 @@ $pageTitle = "register"
                     <li><?= $error; ?></li>
                 <?php endforeach; ?>
             </ul>
+        </div>
+    <?php endif; ?>
+
+    <?php if (!empty($success)) : ?>
+        <div class="success">
+            <p><?= $success ?> <a href="./login.php">click here to login</a></p>
         </div>
     <?php endif; ?>
 

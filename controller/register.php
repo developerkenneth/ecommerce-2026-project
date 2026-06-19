@@ -1,10 +1,10 @@
 <?php
 
-include_once "./src/Utilities/Helper.php";
-
 use App\Utilities\Helper;
+use App\Model\User;
 
 $errors = [];
+$success = "";
 
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
@@ -44,6 +44,23 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
         }
 
         // checked if email already exist in database 
+        if (User::emailExist($email)) {
+            $errors[] = "this email $email already exist";
+        }
 
+        // register user
+
+        $registrationData = [
+            'name' => $name,
+            'password' => $password,
+            'email' => $email
+        ];
+
+        try {
+            User::create($registrationData);
+            $success = "registration has been completed successfully";
+        } catch (PDOException $error) {
+            $errors[] = $error->getMessage();
+        }
     }
 }

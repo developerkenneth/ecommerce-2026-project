@@ -220,3 +220,12 @@ form button:hover {
   margin: 25px 0px;
   font-size: smaller;
 }
+
+.success {
+  background-color: rgba(6, 111, 51, 0.3);
+  color: rgb(4, 78, 45);
+  padding: 25px;
+  border-radius: 3px;
+  margin: 25px 0px;
+  font-size: smaller;
+}

@@ -20,7 +20,7 @@ final class Users extends AbstractMigration
     public function change(): void
     {
         // create table users here
-        $table = $this->table("users", ['id' => 'primary_key']);
+        $table = $this->table("users");
         $table->addColumn('email', 'char', ['limit' => 255])
             ->addColumn('name', 'string', ['length' => 1000])
             ->addColumn('password', 'string', ['limit' => 255])->addTimestamps()->create();
