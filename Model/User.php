@@ -29,9 +29,6 @@ class User
         $values = substr($values, 0, strlen($values) - 2);
 
         $sql = "INSERT INTO `users` ($columns) VALUES ($values) LIMIT 1";
-
-        echo $sql;
-        var_dump($data);
         $db = new Db();
         $connect = $db->connect();
         $stmt = $connect->prepare($sql);
@@ -51,5 +48,16 @@ class User
         $stmt->execute([$email]);
         $result = $stmt->rowCount();
         return $result ? true : false;
+    }
+
+    public static function findUserByEmail($email)
+    {
+        $db = new Db();
+        $connect = $db->connect();
+        $sql = "SELECT * FROM `users` WHERE `email` = ? LIMIT 1";
+        $stmt = $connect->prepare($sql);
+        $stmt->execute([$email]);
+        $result = $stmt->fetch();
+        return $result;
     }
 }

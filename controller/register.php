@@ -8,6 +8,19 @@ $success = "";
 
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
+
+
+    if (!isset($_POST['csrf_token']) || empty($_POST['csrf_token'])) {
+        die("stop trying to hack our website... make satan no punish you");
+    }
+    // validate csrf token to prevent request forgery
+    if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+
+        die("stop trying to hack our website... make satan no punish you");
+    }
+
+
+
     // sanitization
     $name = Helper::sanitize($_POST['name']);
     $email = Helper::sanitize($_POST['email']);
@@ -28,6 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     }
 
     if (empty($errors)) {
+
 
         // email validation
 
@@ -59,6 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
         try {
             User::create($registrationData);
             $success = "registration has been completed successfully";
+            unset($_SESSION['csrf_token']);
         } catch (PDOException $error) {
             $errors[] = $error->getMessage();
         }

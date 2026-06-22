@@ -1,7 +1,16 @@
 <?php
+session_start();
 require_once __DIR__ . "/vendor/autoload.php";
 
 use App\Utilities\Helper;
+use App\Core\Session;
+
+
+// creating a csrf token
+if (!isset($_SESSION['csrf_token']) && empty($_SESSION['csrf_token'])) {
+    Session::csrf();
+}
+
 
 $pageTitle = "register";
 
@@ -38,6 +47,8 @@ $pageTitle = "register";
         <input type="password" name="password" placeholder="Password" />
 
         <input type="password" name="confirm_password" placeholder="Confirm Password" />
+
+        <input type="hidden" value="<?= $_SESSION['csrf_token'] ?>" name="csrf_token">
 
         <button type="submit">Register</button>
     </form>

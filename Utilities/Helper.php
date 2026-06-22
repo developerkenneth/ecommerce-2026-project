@@ -22,10 +22,16 @@ class Helper
             }
         }
     }
+
     public static function hasPassword($passwordString)
     {
         // hash the password 
         $hashedPassword = password_hash($passwordString, PASSWORD_DEFAULT);
         return $hashedPassword;
+    }
+
+    public static function verifyPassword($passwordString, $hashedPassword)
+    {
+        return password_verify($passwordString, $hashedPassword);
     }
 }
