@@ -2,11 +2,11 @@ const productsContainer = document.querySelector(".products-container");
 
 async function fetchProducts() {
   try {
-    const response = await fetch("http://localhost:3000/products");
+    const response = await fetch("http://localhost/e-commerce.com/api/products.php");
 
-    const products = await response.json();
+    const data = await response.json();
+    displayProducts(data.products);
 
-    displayProducts(products);
   } catch (error) {
     console.log(error);
   }
@@ -28,7 +28,7 @@ function displayProducts(products) {
 
           <p>$${product.price}</p>
 
-          <button onclick="addToCart(${product.id})">
+          <button onclick="addToCart('${product.uuid}')">
             Add To Cart
           </button>
 
@@ -41,13 +41,13 @@ function displayProducts(products) {
 }
 
 async function addToCart(id) {
-  const response = await fetch(`http://localhost:3000/products/${id}`);
+  const response = await fetch(`http://localhost/e-commerce.com/api/products.php?id=${id}`);
 
-  const product = await response.json();
+  const data = await response.json();
 
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-  cart.push(product);
+  cart.push(data.product);
 
   localStorage.setItem("cart", JSON.stringify(cart));
 
