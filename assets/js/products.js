@@ -1,14 +1,22 @@
 const productsContainer = document.querySelector(".products-container");
+const loaderContainer = document.querySelector(".loader-container");
+const maxPrice = document.querySelector(".max-price");
+const outputMax = document.querySelector("#output-max");
 
-async function fetchProducts() {
+
+
+async function fetchProducts(url) {
   try {
-    const response = await fetch("http://localhost/e-commerce.com/api/products.php");
+    const response = await fetch(url);
 
     const data = await response.json();
     displayProducts(data.products);
 
   } catch (error) {
     console.log(error);
+  } finally {
+    loaderContainer.classList.add("hidden");
+    productsContainer.classList.remove("hidden");
   }
 }
 
@@ -54,4 +62,41 @@ async function addToCart(id) {
   alert("Product added to cart");
 }
 
-fetchProducts();
+fetchProducts("http://localhost/e-commerce.com/api/products.php");
+
+
+// search functionality
+
+const searchBar = document.querySelector(".search-bar");
+const handleSearch = async (event) => {
+  // get current search value
+  const searchKey = event.currentTarget.value;
+  // call loading state
+  loaderContainer.classList.remove("hidden");
+
+  try {
+    const response = await fetchProducts(`http://localhost/e-commerce.com/api/products.php?search=${searchKey}`);
+  } catch (error) {
+    console.error(error);
+  }
+
+}
+
+maxPrice.addEventListener("input", (event) => {
+  const currentPrice = event.currentTarget.value;
+  outputMax.innerHTML = currentPrice;
+});
+
+const handleFilter = async (e) => {
+  const maxPrice = e.currentTarget.value;
+  console.log(maxPrice);
+
+  try {
+    productsContainer.classList.add("hidden");
+    const data = await fetchProducts(`http://localhost/e-commerce.com/api/products.php?max_price=${maxPrice}`);
+  } catch (error) {
+    console.error(error);
+  }
+}
+maxPrice.addEventListener("change", handleFilter);
+searchBar.addEventListener("change", handleSearch);

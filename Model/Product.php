@@ -19,10 +19,17 @@ class Product
             }
 
             // max_price
-            if (isset($filters['max_price'])) {
+            if (isset($filters['max_price']) && isset($filters['search'])) {
 
                 $whereClause[] = $filters['max_price'];
                 $whereString .= " AND `price` <= ?";
+            }
+
+            // max_price
+            if (isset($filters['max_price']) && !isset($filters['search'])) {
+
+                $whereClause[] = $filters['max_price'];
+                $whereString .= "`price` <= ?";
             }
 
             // min_price
