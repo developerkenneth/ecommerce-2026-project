@@ -40,6 +40,10 @@ function displayProducts(products) {
             Add To Cart
           </button>
 
+          <a href="./product.php?id=${product.uuid}">
+            view product
+          </a>
+
         </div>
 
       </div>
