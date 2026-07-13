@@ -34,4 +34,9 @@ class Helper
     {
         return password_verify($passwordString, $hashedPassword);
     }
+
+    public static function redirect($url)
+    {
+        header("location:$url");
+    }
 }
