@@ -39,4 +39,9 @@ class Helper
     {
         header("location:$url");
     }
+
+    public static function isLargeFile($file_size)
+    {
+        return $file_size > 4000000 ? true : false;
+    }
 }

@@ -3,6 +3,7 @@
 namespace App\Model;
 
 use App\Core\Db;
+use App\Utilities\Helper;
 
 class Product
 {
@@ -72,5 +73,37 @@ class Product
             return $result;
         }
         return [];
+    }
+
+
+    public static function create($data)
+    {
+        $db = new Db();
+        $connect = $db->connect();
+
+
+        // uuid field
+
+        $data['uuid'] = \Ramsey\uuid\v7();
+
+        array_walk($data, function ($value) {
+            Helper::sanitize($value);
+        });
+
+        // prepare template
+        $template_string = implode(', :', array_keys($data));
+        $template_string = ":$template_string";
+
+        $fields_template = implode(', ', array_keys($data));
+
+        $sql = "INSERT INTO `products` ($fields_template) VALUES ($template_string)";
+        $stmt = $connect->prepare($sql);
+        if($stmt->execute($data)){
+            return true;
+        }
+        return false;
+
+
+        // $stmt = $connect->prepare($sql);
     }
 }
