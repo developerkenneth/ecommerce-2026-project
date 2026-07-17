@@ -2,6 +2,7 @@
 
 use App\Model\Product;
 use App\Utilities\Helper;
+use App\Utilities\Response;
 
 require_once __DIR__ . "/../vendor/autoload.php";
 
@@ -9,6 +10,7 @@ header('Access-Control-Allow-Origin:*');
 header("Content-Type: application/json");
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
 
+$response = new Response();
 
 
 
@@ -101,13 +103,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (isset($_FILES['photos'])) {
         $photos = $_FILES['photos'];
+
+
+        $acceptedFiles = ['jpeg', 'png', "jpg"];
+        $fileExtentions = [];
+        $badFileType = false;
+        // check if it is an image
+        foreach ($photos['name'] as $name) {
+
+            $nameArray = explode(".", $name);
+            $fileExtentions[] = end($nameArray);
+            $fileType = end($nameArray);
+
+            if (!in_array($fileType, $acceptedFiles)) {
+                $badFileType = true;
+            }
+        }
+
+        if ($badFileType) {
+            http_response_code(400);
+            echo json_encode([
+                'message' => 'only accepts "jpeg, png and jpg"',
+                'success' => false
+            ]);
+            exit;
+        }
+
         $failSizeCheck = false;
+
 
         foreach ($photos['size'] as $fileSize) {
             if (Helper::isLargeFile($fileSize)) {
                 $failSizeCheck = true;
             }
         }
+
+
+
 
 
         if ($failSizeCheck) {
@@ -160,6 +192,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // go ahead to create new product
     try {
+
+        $files = [];
+        if (isset($fileExtentions) && !empty($fileExtentions)) {
+            if (isset($photos) && !empty($photos)) {
+                $i = 0;
+                foreach ($photos['tmp_name'] as $tmp) {
+                    // extentions
+                    $filePath = "../assets/photos/";
+                    $newFileName = \Ramsey\Uuid\v7();
+                    $newFilePath = $filePath . $newFileName . "." . $fileExtentions[$i];
+                    $photo = $newFileName . "." . $fileExtentions[$i];
+
+                    move_uploaded_file($tmp, $newFilePath);
+                    $files[] = $photo;
+                    $i++;
+                }
+
+                $encodedPhotos = json_encode($files);
+                $_POST['photos'] = $encodedPhotos;
+                Product::create($_POST);
+                http_response_code(201);
+                echo json_encode([
+                    'message' => 'product have been created successfully',
+                    'success' => true
+                ]);
+                exit;
+            }
+        }
+
         Product::create($_POST);
         http_response_code(201);
         echo json_encode([
@@ -173,5 +234,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'success' => true
         ]);
         exit;
+    }
+}
+
+if ($_SERVER['REQUEST_METHOD'] === "PUT") {
+    // required fields
+
+    // NOTE: work on verifying who is sending a particular request if it is the initial user that created it
+    if (!isset($_GET['id']) || empty($_GET['id'])) {
+        $response->statusCode(400)->jsonResponse([
+            'message' => 'please provide a product id',
+            'success' => false
+        ]);
+        exit;
+    }
+    $emptyfields = '';
+    $required_fields = ['price', 'name', 'description', 'brand', 'stocks_available'];
+    $required = implode(', ', $required_fields);
+
+
+    $data = file_get_contents("php://input");
+    $errors = [];
+    foreach ($required_fields as $field) {
+        if (!isset($data[$field])) {
+            $errors[] = "$field is required ";
+        }
     }
 }
