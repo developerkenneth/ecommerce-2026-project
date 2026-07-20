@@ -98,12 +98,62 @@ class Product
 
         $sql = "INSERT INTO `products` ($fields_template) VALUES ($template_string)";
         $stmt = $connect->prepare($sql);
-        if($stmt->execute($data)){
+        if ($stmt->execute($data)) {
             return true;
         }
         return false;
 
 
         // $stmt = $connect->prepare($sql);
+    }
+
+    // update product
+
+    public static function update($uuid, $data)
+    {
+
+        $db = new Db();
+        $connect = $db->connect();
+
+
+        array_walk($data, function ($value) {
+            Helper::sanitize($value);
+        });
+
+        $logic = "";
+        // extraxct sql string from data array
+        foreach ($data as $column => $value) {
+            $logic .= "$column = :$column, ";
+        }
+
+        $logic = substr($logic, 0, strlen($logic) - 2);
+
+        $data['uuid'] = $uuid;
+        // this will remove the not needed space and coma at the ending.
+        $sql = "UPDATE `products` SET $logic WHERE uuid = :uuid LIMIT 1 ";
+
+        // echo  json_encode($sql);
+        // exit;
+
+        $stmt = $connect->prepare($sql);
+
+        if ($stmt->execute($data)) {
+            return true;
+        }
+
+        return false;
+    }
+
+
+    public static function delete($uuid)
+    {
+        $db = new Db();
+        $connect = $db->connect();
+        $sql = "DELETE FROM `products` WHERE uuid = :uuid";
+        $stmt = $connect->prepare($sql);
+        if ($stmt->execute(['uuid' => $uuid])) {
+            return true;
+        }
+        return false;
     }
 }
