@@ -44,9 +44,10 @@ class Auth
     public static function user()
     {
         return $_SESSION['user'];
-    }   
+    }
 
-
-    
-    
+    public static function userId()
+    {
+        return $_SESSION['user_id'];
+    }
 }

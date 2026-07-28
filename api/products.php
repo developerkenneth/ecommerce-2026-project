@@ -14,6 +14,7 @@ $response = new Response();
 
 
 
+// API END POINT FOR FETCH SINGLE PRODUCT
 if ($_SERVER['REQUEST_METHOD'] === "GET" && isset($_GET['id']) && !empty($_GET['id'])) {
     $uuid = Helper::sanitize($_GET['id']);
     try {
@@ -39,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === "GET" && isset($_GET['id']) && !empty($_GET['
 }
 
 
-
+// API END POINT FOR FETCH ALL PRODUCTS
 if ($_SERVER['REQUEST_METHOD'] === "GET") {
 
     $filters = [];
@@ -70,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === "GET") {
     }
 }
 
-
+// API END POINT FOR POST SINGLE PRODUCT
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // required fields
@@ -237,6 +238,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+// API END POINT FOR UPDATE SINGLE PRODUCT
 if ($_SERVER['REQUEST_METHOD'] === "PUT") {
     // required fields
 
@@ -314,7 +316,7 @@ if ($_SERVER['REQUEST_METHOD'] === "PUT") {
     }
 }
 
-
+// API END POINT FOR DELETE SINGLE PRODUCT
 if ($_SERVER['REQUEST_METHOD'] === "DELETE") {
     // required fields
 

@@ -44,4 +44,9 @@ class Helper
     {
         return $file_size > 4000000 ? true : false;
     }
+
+    public static function isEmail($emailString)
+    {
+        return filter_var($emailString, FILTER_VALIDATE_EMAIL);
+    }
 }

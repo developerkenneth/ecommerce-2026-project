@@ -60,4 +60,48 @@ class User
         $result = $stmt->fetch();
         return $result;
     }
+
+    public static function update($id, $data)
+    {
+
+        $db = new Db();
+        $connect = $db->connect();
+
+
+        array_walk($data, function ($value) {
+            Helper::sanitize($value);
+        });
+
+        $logic = "";
+        // extraxct sql string from data array
+        foreach ($data as $column => $value) {
+            $logic .= "$column = :$column, ";
+        }
+
+        $logic = substr($logic, 0, strlen($logic) - 2);
+
+        $data['id'] = $id;
+        // this will remove the not needed space and coma at the ending.
+        $sql = "UPDATE `users` SET $logic WHERE id = :id LIMIT 1 ";
+
+
+        $stmt = $connect->prepare($sql);
+
+        if ($stmt->execute($data)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static function findUserById($id)
+    {
+        $db = new Db();
+        $connect = $db->connect();
+        $sql = "SELECT * FROM `users` WHERE `id` = ? LIMIT 1";
+        $stmt = $connect->prepare($sql);
+        $stmt->execute([$id]);
+        $result = $stmt->fetch();
+        return $result;
+    }
 }
