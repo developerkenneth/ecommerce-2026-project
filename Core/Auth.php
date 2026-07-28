@@ -44,5 +44,9 @@ class Auth
     public static function user()
     {
         return $_SESSION['user'];
-    }
+    }   
+
+
+    
+    
 }

@@ -231,7 +231,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } catch (\Exception $error) {
         echo json_encode([
             'errors' => ['server_error' => $error->getMessage()],
-            'success' => true
+            'success' => false
         ]);
         exit;
     }
@@ -248,16 +248,112 @@ if ($_SERVER['REQUEST_METHOD'] === "PUT") {
         ]);
         exit;
     }
+
+    $id = $_GET['id'];
+
+    // check if ID exist 
+    $product = Product::find($id);
+
+    if (empty($product)) {
+        $response->statusCode(400)->jsonResponse([
+            'message' => 'invalid product ID, please check the check the product ID and try again',
+            'success' => false
+        ]);
+        exit;
+    }
+
     $emptyfields = '';
     $required_fields = ['price', 'name', 'description', 'brand', 'stocks_available'];
     $required = implode(', ', $required_fields);
 
 
-    $data = file_get_contents("php://input");
+    // if a field is set
+    $rawDatas =  file_get_contents("php://input");
+    $datas = json_decode($rawDatas, true);
     $errors = [];
+
     foreach ($required_fields as $field) {
-        if (!isset($data[$field])) {
+        if (!isset($datas[$field])) {
             $errors[] = "$field is required ";
         }
+    }
+
+    foreach ($datas as $field => $value) {
+        if (in_array($field, $required_fields) && empty($value)) {
+            $errors[] = "$field, cannot be empty ";
+        }
+    }
+
+    // assignment
+    // check the price if it is less than 0.5
+    // and other things you deem necessary
+
+
+    if (!empty($errors)) {
+        $response->statusCode(400)->jsonResponse([
+            'message' => $errors,
+            'success' => false
+        ]);
+        exit;
+    }
+
+    try {
+        Product::update($id, $datas);
+        $response->statusCode(201)->jsonResponse([
+            'message' => 'product update was successful',
+            'success' => true
+        ]);
+    } catch (\PDOException $error) {
+        $response->statusCode(500)->jsonResponse(
+            [
+                'message' => $error->getMessage(),
+                'success' => false
+            ]
+        );
+        exit;
+    }
+}
+
+
+if ($_SERVER['REQUEST_METHOD'] === "DELETE") {
+    // required fields
+
+    // NOTE: work on verifying who is sending a particular request if it is the initial user that created it
+    if (!isset($_GET['id']) || empty($_GET['id'])) {
+        $response->statusCode(400)->jsonResponse([
+            'message' => 'please provide a product id',
+            'success' => false
+        ]);
+        exit;
+    }
+
+    $id = $_GET['id'];
+
+    // check if ID exist 
+    $product = Product::find($id);
+
+    if (empty($product)) {
+        $response->statusCode(400)->jsonResponse([
+            'message' => 'invalid product ID, please check the check the product ID and try again',
+            'success' => false
+        ]);
+        exit;
+    }
+
+
+
+    try {
+
+        if (Product::delete($id)) {
+            $response->statusCode(204)->jsonResponse([
+                'message' => 'product has been deleted successfully',
+                'success' => true
+            ]);
+        }
+    } catch (\Exception $err) {
+        $response->statusCode(204)->jsonResponse([
+            'message' => $err->getMessage(),
+            'success' => true
+        ]);
     }
 }

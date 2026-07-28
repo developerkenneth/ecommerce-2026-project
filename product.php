@@ -14,6 +14,7 @@
 
     <!-- CSS -->
     <link rel="stylesheet" href="./assets/css/product.css">
+
 </head>
 
 <body>
@@ -31,6 +32,8 @@
             <input id="searchInput" type="text" placeholder="Search products...">
             <button> <i class="fa-solid fa-magnifying-glass"></i></button>
         </div>
+
+        
 
         <div class="nav-icons">
 
