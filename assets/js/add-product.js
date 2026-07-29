@@ -1,117 +1,85 @@
-// const progressCircle = document.querySelector(".progress-circle");
-// const progressButton = document.querySelector(".scroll-progress");
-// let scrollTimer;
-// const radius = 30;
-// const circumference = 2 * Math.PI * radius;
+// Get the form and response container
+const form = document.getElementById("addProductForm");
+const responseMessage = document.getElementById("responseMessage");
 
-// progressCircle.style.strokeDasharray = circumference;
-
-// window.addEventListener("scroll", () => {
-//   const scrollTop = window.scrollY;
-
-//   const pageHeight = document.documentElement.scrollHeight - window.innerHeight;
-
-//   const progress = scrollTop / pageHeight;
-
-//   const offset = circumference - progress * circumference;
-
-//   progressCircle.style.strokeDashoffset = offset;
-
-//   // Show after scrolling down a little
-//   if (scrollTop > 150) {
-//     progressButton.classList.add("show");
-//   } else {
-//     progressButton.classList.remove("show");
-//   }
-// });
-
-// progressButton.addEventListener("click", () => {
-//   window.scrollTo({
-//     top: 0,
-
-//     behavior: "smooth",
-//   });
-// });
-
-// // typerwitering animation
-
-// const sentences = [
-//   "Sell Faster And Efficiency..",
-//   "Reach More Customers..",
-//   "Grow Your Business..",
-//   "Manage Everything Easily..",
-// ];
-
-// const typing = document.getElementById("typing");
-
-// let sentenceIndex = 0;
-// let letterIndex = 0;
-// let deleting = false;
-
-// function type() {
-//   const current = sentences[sentenceIndex];
-
-//   if (!deleting) {
-//     typing.textContent = current.substring(0, letterIndex);
-
-//     letterIndex++;
-
-//     if (letterIndex > current.length) {
-//       deleting = true;
-
-//       setTimeout(type, 1800);
-
-//       return;
-//     }
-//   } else {
-//     typing.textContent = current.substring(0, letterIndex);
-
-//     letterIndex--;
-
-//     if (letterIndex < 0) {
-//       deleting = false;
-
-//       sentenceIndex++;
-
-//       if (sentenceIndex >= sentences.length) {
-//         sentenceIndex = 0;
-//       }
-//     }
-//   }
-
-//   setTimeout(type, deleting ? 45 : 80);
-// }
-
-// type();
-
-
-// handle submission
-
-const form = document.querySelector("form");
-form.addEventListener("submit", (e) => {
+// Listen for form submission
+form.addEventListener("submit", addProduct);
+async function addProduct(e) {
   e.preventDefault();
-
   let error = "";
-  const productForm = new FormData(form);
-  const formObect = Object.fromEntries(productForm);
-
-
-  Object.entries(formObect).forEach((fields) => {
-    if (typeof fields[1] === "string") {
-      if (fields[1].length < 1) {
-        error += `${fields[0]} cannot be empty, `;
-      }
+  // Get all form data
+  const formData = new FormData(form);
+  const formObject = Object.fromEntries(formData);
+  // Validation
+  Object.entries(formObject).forEach(([field, value]) => {
+    if (typeof value === "string" && value.trim() === "") {
+      error += `${field} cannot be empty.<br>`;
     }
   });
 
-  if (productForm.get('name').length < 3) {
-    error += "name should be at least 3 characters long";
+  if (formObject.name && formObject.name.trim().length < 3) {
+    error += "Product name must be at least 3 characters long.<br>";
+  }
+  // Stop if there are validation errors
+  if (error !== "") {
+    responseMessage.innerHTML = `
+      <div class="error">
+        ${error}
+      </div>
+    `;
+    return;
   }
 
-  if (error.length < 1) {
+  // Show loading message
+  responseMessage.innerHTML = `
+    <div class="loading">
+      Adding product...
+    </div>
+  `;
 
+  try {
+    const response = await fetch(
+      "http://localhost/fullprojectv1/api/products.php",
+      {
+        method: "POST",
+        body: formData,
+      },
+    );
+
+    const data = await response.json();
+
+    if (data.success) {
+      responseMessage.innerHTML = `
+        <div class="success">
+          ${data.message}
+        </div>
+      `;
+
+      form.reset();
+    } else {
+      let html = "";
+
+      if (data.errors) {
+        Object.values(data.errors).forEach((err) => {
+          html += `<p>${err}</p>`;
+        });
+      } else {
+        html = `<p>${data.message}</p>`;
+      }
+
+      responseMessage.innerHTML = `
+        <div class="error">
+          ${html}
+        </div>
+      `;
+    }
+  } catch (err) {
+    console.error(err);
+
+    responseMessage.innerHTML = `
+      <div class="error">
+        Something went wrong while sending your request.
+      </div>
+    `;
   }
-
-  console.log(error);
-  return;
-})
+}

@@ -22,11 +22,11 @@ require_once "components/user/head.php";
 
             <div class="breadcrumb">
 
-                <a href="#">Dashboard</a>
+                <a href="./dashboard.php">Dashboard</a>
 
                 <span>/</span>
 
-                <a href="#">Products</a>
+                <a href="./product.php">Products</a>
 
                 <span>/</span>
 
@@ -49,7 +49,7 @@ require_once "components/user/head.php";
 
 
 
-        <form action="" enctype="multipart/form-data">
+        <form id="addProductForm" enctype="multipart/form-data">
             <!-- IMAGE SECTION -->
             <div class="form-card">
 
@@ -73,7 +73,7 @@ require_once "components/user/head.php";
 
                     <input
                         type="file"
-                        name="picture"
+                        name="photos[]"
                         id="imageInput"
                         multiple
                         accept="image/*">
@@ -191,7 +191,10 @@ require_once "components/user/head.php";
 
                         <label>Stock Quantity</label>
 
-                        <input type="number" name="stock" placeholder="Enter the stock...">
+                        <input
+                            type="number"
+                            name="stocks_available"
+                            placeholder="Enter stock...">
 
                     </div>
 
@@ -216,6 +219,7 @@ require_once "components/user/head.php";
                 <button type="submit">
                     Add Product
                 </button>
+                <div id="responseMessage"></div>
 
             </div>
             </div>

@@ -267,7 +267,7 @@ header {
 }
 .dashboard-sidebar li.logout{
 
-margin-top: 114vh;
+/* margin-top: 200vh; */
 background-color: rgb(228, 13, 13);
 border-radius: 12px;
 color: white;
