@@ -22,23 +22,15 @@ require_once "components/user/head.php";
 
             <div class="breadcrumb">
 
-                <a href="#">Dashboard</a>
+                <a href="./dashboard.php">Dashboard</a>
 
                 <span>/</span>
 
-                <a href="#">Products</a>
+                <a href="./product.php">Products</a>
 
                 <span>/</span>
 
                 <strong>Add Product</strong>
-
-            </div>
-
-            <div class="typing-wrapper">
-
-                <span id="typing"></span>
-
-                <span class="cursor"></span>
 
             </div>
 
@@ -49,7 +41,7 @@ require_once "components/user/head.php";
 
 
 
-        <form action="" enctype="multipart/form-data">
+        <form id="addProductForm" action="" enctype="multipart/form-data">
             <!-- IMAGE SECTION -->
             <div class="form-card">
 
@@ -73,10 +65,10 @@ require_once "components/user/head.php";
 
                     <input
                         type="file"
-                        name="picture"
+                        name="photos[]"
                         id="imageInput"
                         multiple
-                        accept="image/*">
+                        accept=".jpg,.jpeg,.png">
 
                     <i class="fa-solid fa-cloud-arrow-up"></i>
 
@@ -90,26 +82,6 @@ require_once "components/user/head.php";
                 </div>
 
                 <div id="previewContainer" class="preview-images"></div>
-
-            </div>
-
-            <div class="preview-images">
-
-                <div class="preview-box">
-                    <i class="fa-solid fa-plus"></i>
-                </div>
-
-                <div class="preview-box">
-                    <i class="fa-solid fa-plus"></i>
-                </div>
-
-                <div class="preview-box">
-                    <i class="fa-solid fa-plus"></i>
-                </div>
-
-                <div class="preview-box">
-                    <i class="fa-solid fa-plus"></i>
-                </div>
 
             </div>
 
@@ -213,7 +185,7 @@ require_once "components/user/head.php";
 
                 </div>
 
-                <button type="submit">
+                <button type="submit" id="sumit-btn" >
                     Add Product
                 </button>
 

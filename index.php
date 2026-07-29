@@ -8,24 +8,88 @@
     <title>Products</title>
 
     <link rel="stylesheet" href="./assets/css/style.css" />
+    <link rel="stylesheet" href="./assets/css/dashboard.css">
 </head>
 
 <body>
-    <nav>
-        <div class="logo">GABSTORE</div>
+    <!-- HEADER -->
+    <header>
 
-        <!-- search bar -->
-
-        <div class="search-container">
-            <input class="search-bar" type="search" placeholder="enter a search key word">
+        <div class="logo">
+            <h2><a href="dashboard.php">GABSITE</a></h2>
         </div>
 
-        <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="products.html">Products</a></li>
-            <li><a href="login.html">Login</a></li>
-        </ul>
-    </nav>
+        <div class="search-box">
+
+
+            <input id="searchInput" type="text" placeholder="Search products...">
+            <button> <i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+
+        <div class="nav-icons">
+            <!-- account help section -->
+
+            <div class="dropdown">
+
+                <div class="icon" id="account-help">
+                    <i class="fa-regular fa-user"></i>
+                    <span>Gabriel</span>
+                    <span><img src="./chevron-down.svg" class="chevron"></span>
+                </div>
+
+                <div class="account-options">
+                    <ul>
+                        <li><a href="#">Profile</a></li>
+                        <li><a href="#">Settings</a></li>
+                        <li><a href="#">Help</a></li>
+                        <li class="active"><a href="#">Logout</a></li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- help section -->
+            <div class="dropdown">
+
+                <div class="icon" id="help-icon">
+                    <i class="fa-solid fa-question-circle"></i>
+                    <span>Help</span>
+                    <span><img src="./chevron-down.svg" class="chevron"></span>
+                </div>
+
+                <div class="help-options">
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Contact Support</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Report a Problem</a></li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- cart section -->
+            <div class="dropdown">
+
+                <div class="icon" id="cart-icon">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span>Cart</span>
+                    <span><img src="./chevron-down.svg" class="chevron"></span>
+                </div>
+
+                <div class="cart-options">
+                    <ul>
+                        <li><a href="#">View Cart</a></li>
+                        <li><a href="#">Checkout</a></li>
+                        <li><a href="#">Order History</a></li>
+                        <li><a href="#">Track Order</a></li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+    </header>
 
     <section class="products-section">
 
@@ -53,6 +117,7 @@
     </section>
 
     <script src="./assets/js/products.js"></script>
+    <script src="./assets/js/dashborad.js" ></script>
 </body>
 
 </html>
