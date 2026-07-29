@@ -2,7 +2,7 @@
 <header>
 
     <div class="logo">
-        <h2>GABSITE</h2>
+        <h2> <a href="dashboard.php">GABSITE</a></h2>
     </div>
 
     <div class="search-box">

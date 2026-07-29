@@ -34,14 +34,6 @@ require_once "components/user/head.php";
 
             </div>
 
-            <div class="typing-wrapper">
-
-                <span id="typing"></span>
-
-                <span class="cursor"></span>
-
-            </div>
-
         </div>
 
 
@@ -49,7 +41,11 @@ require_once "components/user/head.php";
 
 
 
+<<<<<<< HEAD
         <form id="addProductForm" enctype="multipart/form-data">
+=======
+        <form id="addProductForm" action="" enctype="multipart/form-data">
+>>>>>>> gabriel
             <!-- IMAGE SECTION -->
             <div class="form-card">
 
@@ -76,7 +72,7 @@ require_once "components/user/head.php";
                         name="photos[]"
                         id="imageInput"
                         multiple
-                        accept="image/*">
+                        accept=".jpg,.jpeg,.png">
 
                     <i class="fa-solid fa-cloud-arrow-up"></i>
 
@@ -90,26 +86,6 @@ require_once "components/user/head.php";
                 </div>
 
                 <div id="previewContainer" class="preview-images"></div>
-
-            </div>
-
-            <div class="preview-images">
-
-                <div class="preview-box">
-                    <i class="fa-solid fa-plus"></i>
-                </div>
-
-                <div class="preview-box">
-                    <i class="fa-solid fa-plus"></i>
-                </div>
-
-                <div class="preview-box">
-                    <i class="fa-solid fa-plus"></i>
-                </div>
-
-                <div class="preview-box">
-                    <i class="fa-solid fa-plus"></i>
-                </div>
 
             </div>
 
@@ -216,7 +192,7 @@ require_once "components/user/head.php";
 
                 </div>
 
-                <button type="submit">
+                <button type="submit" id="sumit-btn" >
                     Add Product
                 </button>
                 <div id="responseMessage"></div>

@@ -2,11 +2,99 @@
 const form = document.getElementById("addProductForm");
 const responseMessage = document.getElementById("responseMessage");
 
+<<<<<<< HEAD
 // Listen for form submission
 form.addEventListener("submit", addProduct);
 async function addProduct(e) {
+=======
+// progressCircle.style.strokeDasharray = circumference;
+
+// window.addEventListener("scroll", () => {
+//   const scrollTop = window.scrollY;
+
+//   const pageHeight = document.documentElement.scrollHeight - window.innerHeight;
+
+//   const progress = scrollTop / pageHeight;
+
+//   const offset = circumference - progress * circumference;
+
+//   progressCircle.style.strokeDashoffset = offset;
+
+//   // Show after scrolling down a little
+//   if (scrollTop > 150) {
+//     progressButton.classList.add("show");
+//   } else {
+//     progressButton.classList.remove("show");
+//   }
+// });
+
+// progressButton.addEventListener("click", () => {
+//   window.scrollTo({
+//     top: 0,
+
+//     behavior: "smooth",
+//   });
+// });
+
+// // typerwitering animation
+
+// const sentences = [
+//   "Sell Faster And Efficiency..",
+//   "Reach More Customers..",
+//   "Grow Your Business..",
+//   "Manage Everything Easily..",
+// ];
+
+// const typing = document.getElementById("typing");
+
+// let sentenceIndex = 0;
+// let letterIndex = 0;
+// let deleting = false;
+
+// function type() {
+//   const current = sentences[sentenceIndex];
+
+//   if (!deleting) {
+//     typing.textContent = current.substring(0, letterIndex);
+
+//     letterIndex++;
+
+//     if (letterIndex > current.length) {
+//       deleting = true;
+
+//       setTimeout(type, 1800);
+
+//       return;
+//     }
+//   } else {
+//     typing.textContent = current.substring(0, letterIndex);
+
+//     letterIndex--;
+
+//     if (letterIndex < 0) {
+//       deleting = false;
+
+//       sentenceIndex++;
+
+//       if (sentenceIndex >= sentences.length) {
+//         sentenceIndex = 0;
+//       }
+//     }
+//   }
+
+//   setTimeout(type, deleting ? 45 : 80);
+// }
+
+// type();
+
+// handle submission
+
+const form = document.querySelector("form");
+form.addEventListener("submit", (e) => {
+>>>>>>> gabriel
   e.preventDefault();
   let error = "";
+<<<<<<< HEAD
   // Get all form data
   const formData = new FormData(form);
   const formObject = Object.fromEntries(formData);
@@ -83,3 +171,58 @@ async function addProduct(e) {
     `;
   }
 }
+=======
+  const productForm = new FormData(form);
+  const formObect = Object.fromEntries(productForm);
+
+  Object.entries(formObect).forEach((fields) => {
+    if (typeof fields[1] === "string") {
+      if (fields[1].length < 1) {
+        error += `${fields[0]} cannot be empty, `;
+      }
+    }
+  });
+
+  if (productForm.get("name").length < 3) {
+    error += "name should be at least 3 characters long";
+  }
+
+  if (error.length < 1) {
+  }
+
+console.log(error);
+  return;
+});
+
+const imageInput = document.getElementById("imageInput");
+const previewContainer = document.getElementById("previewContainer");
+
+imageInput.addEventListener("change", previewImages);
+
+function previewImages() {
+  previewContainer.innerHTML = "";
+
+  const files = imageInput.files;
+
+  for (const file of files) {
+    const imageURL = URL.createObjectURL(file);
+
+    const card = document.createElement("div");
+    card.className = "preview-card";
+
+    card.innerHTML = `
+            <button type="button" class="remove-btn">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <img src="${imageURL}" alt="${file.name}">
+
+            <div class="preview-footer">
+                <span>${file.name}</span>
+            </div>
+        `;
+
+    previewContainer.appendChild(card);
+  }
+}
+>>>>>>> gabriel
