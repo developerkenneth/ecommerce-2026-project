@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // Get the form and response container
 const form = document.getElementById("addProductForm");
 const responseMessage = document.getElementById("responseMessage");
@@ -6,6 +7,12 @@ const responseMessage = document.getElementById("responseMessage");
 form.addEventListener("submit", addProduct);
 
 async function addProduct(e) {
+=======
+
+
+const form = document.querySelector("form");
+form.addEventListener("submit", (e) => {
+>>>>>>> gabriel
   e.preventDefault();
 
   let error = "";
