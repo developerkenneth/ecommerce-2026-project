@@ -41,11 +41,7 @@ require_once "components/user/head.php";
 
 
 
-<<<<<<< HEAD
         <form id="addProductForm" enctype="multipart/form-data">
-=======
-        <form id="addProductForm" action="" enctype="multipart/form-data">
->>>>>>> gabriel
             <!-- IMAGE SECTION -->
             <div class="form-card">
 
