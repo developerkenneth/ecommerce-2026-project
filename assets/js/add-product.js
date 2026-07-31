@@ -44,7 +44,7 @@ async function addProduct(e) {
 
   try {
     const response = await fetch(
-      "http://localhost/fullprojectv1/api/products.php",
+      "http://localhost/e-commerce.com/api/products.php",
       {
         method: "POST",
         body: formData,

@@ -7,7 +7,7 @@ require_once __DIR__ . "/vendor/autoload.php";
 $pageTitle = "Login";
 
 
-if (!isset($_SESSION['csrf_token']) && !empty($_SESSION['csrf_token'])) {
+if (!isset($_SESSION['csrf_token']) && empty($_SESSION['csrf_token'])) {
     Session::csrf();
 }
 
@@ -32,14 +32,9 @@ if (!isset($_SESSION['csrf_token']) && !empty($_SESSION['csrf_token'])) {
     <form method="post" action="">
         <input type="email" name="email" placeholder="Enter Email" required />
 
-        <input
-            type="password"
-            name="password"
-            placeholder="Enter Password"
+        <input type="password" name="password" placeholder="Enter Password" required />
 
-            required />
-
-        <input type="hidden" value="<?= $_SESSION['csrf_token'] ?>" name="csrf_token">
+        <input type="hidden" value="<?= $_SESSION['csrf_token'] ?>" name="csrf_token" />
 
         <button type="submit">Login</button>
     </form>

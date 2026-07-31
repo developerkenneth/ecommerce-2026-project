@@ -104,4 +104,48 @@ class User
         $result = $stmt->fetch();
         return $result;
     }
+
+
+    /**
+     * @param array $data please data should have a single array element
+     * @return array the actual data from the database.
+     */
+    public static function find($data)
+    {
+        $db = new Db();
+        $connect = $db->connect();
+        array_walk($data, function ($value) {
+            Helper::sanitize($value);
+        });
+
+        $col = "";
+        $value = "";
+
+        foreach ($data as $key => $val) {
+            $col = $key;
+        }
+
+        $sql = "SELECT * FROM `users` WHERE $col = :$col LIMIT 1";
+        $stmt = $connect->prepare($sql);
+        $stmt->execute($data);
+        $result = $stmt->fetch();
+        if ($result) {
+            return $result;
+        }
+        return [];
+    }
+
+    /**
+     *@param string $user_id   should be a type of string (uuid)
+     *@return boolean
+     */
+
+    public static function destroy($user_id)
+    {
+        $db = new Db();
+        $connect = $db->connect();
+        $sql = "DELETE FROM `users` WHERE id = :id  LIMIT 1";
+        $stmt = $connect->prepare($sql);
+        return $stmt->execute(['id' => $user_id]) ? true : false;
+    }
 }

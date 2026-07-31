@@ -116,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $fileExtentions[] = end($nameArray);
             $fileType = end($nameArray);
 
-            if (!in_array($fileType, $acceptedFiles)) {
+            if (!in_array(strtolower($fileType), $acceptedFiles)) {
                 $badFileType = true;
             }
         }
@@ -359,4 +359,3 @@ if ($_SERVER['REQUEST_METHOD'] === "DELETE") {
         ]);
     }
 }
-  

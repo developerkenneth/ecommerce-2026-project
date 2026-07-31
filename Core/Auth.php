@@ -29,6 +29,19 @@ class Auth
         return false;
     }
 
+    public static function isAdmin()
+    {
+        if (!self::isLoggedIn() === true) {
+            return false;
+        }
+
+        if ($_SESSION['user']->user_type === "admin") {
+            return true;
+        }
+
+        return false;
+    }
+
     //redirect a user to login page if the user is not logged in
     public static function loggedOutRedirect()
     {

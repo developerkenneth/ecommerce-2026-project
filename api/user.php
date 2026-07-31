@@ -139,3 +139,43 @@ if ($_SERVER['REQUEST_METHOD'] == "PUT") {
         exit;
     }
 }
+
+if ($_SERVER['REQUEST_METHOD'] === "DELETE") {
+    $rawData = file_get_contents("php://input");
+    $data = json_decode($rawData, true);
+    if (!isset($data['user_id'])) {
+        $response->statusCode(404)->jsonResponse([
+            'message' => 'please provide a valid user id',
+            'success' => false
+        ]);
+        exit;
+    }
+    // colect user from the data base 
+    $user = User::find(['id' => $data['user_id']]);
+
+    if (empty($user)) {
+        $response->statusCode(404)->jsonResponse([
+            'message' => 'invalid user id',
+            'success' => false
+        ]);
+        exit;
+    }
+    try {
+        User::destroy($data['user_id']);
+        $response->statusCode(204)->jsonResponse([
+            'message' => "user has been deleted successfully",
+            'success' => true
+        ]);
+        exit;
+    } catch (\PDOException $err) {
+        $response->statusCode(404)->jsonResponse([
+            'message' => $err->getMessage(),
+            'success' => false
+        ]);
+    }
+
+    exit;
+}
+
+
+$response->statusCode(404)->jsonResponse("page not found");
