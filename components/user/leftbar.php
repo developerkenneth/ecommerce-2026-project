@@ -1,3 +1,5 @@
+
+
     <!-- LEFT MENU -->
 
     <div class="dashboard-sidebar">
@@ -40,12 +42,11 @@
                 <i class="fa-solid fa-gear"></i>
                 Settings
             </li>
-
-            <li class="logout">
+            <div class="logout">
                 <i class="fa-solid fa-right-from-bracket "></i>
                 Logout
-            </li>
-
+            </div>
         </ul>
+           
 
     </div>
