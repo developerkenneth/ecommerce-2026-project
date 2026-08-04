@@ -132,7 +132,7 @@ class User
         if ($result) {
             return $result;
         }
-        return [];
+        return (object)[];
     }
 
     /**
