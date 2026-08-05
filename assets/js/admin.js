@@ -13,4 +13,4 @@ document.addEventListener("click", (e) => {
 });
 
 // toggle for the dark mood 
-const darkMood = document.getElementById("themeToggle");
+const
