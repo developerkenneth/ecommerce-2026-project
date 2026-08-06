@@ -18,9 +18,9 @@ require_once("components/user/head.php");
             <div class="admin-dashboard-header">
 
                 <div>
-                    <h1>Dashboard</h1>
+                    <h1>Admin</h1>
 
-                    <p>Welcome back, Gabriel 👋</p>
+                    <p>Welcome back, username👋</p>
 
                     <span>Here's what's happening across your marketplace today.</span>
                 </div>
@@ -184,13 +184,9 @@ require_once("components/user/head.php");
 
                     </div>
 
-                    <div class="chart-placeholder">
+                    <div class="chart-container">
 
-                        <i class="fa-solid fa-chart-line"></i>
-
-                        <h3>Revenue Chart</h3>
-
-                        <p>Chart.js will be connected here.</p>
+                        <canvas id="revenueChart"></canvas>
 
                     </div>
 
