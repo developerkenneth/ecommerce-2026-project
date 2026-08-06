@@ -1,6 +1,34 @@
+:root{
+    --bg:#f3f4f6;
+    --surface:#ffffff;
+    --surface-2:#f8fafc;
+    --text:#111827;
+    --text-light:#6b7280;
+    --border:#e5e7eb;
+    --primary:#ff6b00;
+    --shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+
+body.dark-theme{
+    --bg:#0f172a;
+    --surface:#1e293b;
+    --surface-2:#334155;
+    --text:#f8fafc;
+    --text-light:#94a3b8;
+    --border:#334155;
+    --primary:#ff6b00;
+    --shadow:0 10px 30px rgba(0,0,0,.35);
+}
+
+
+
+
 body {
   margin: 0;
-  background: #f3f4f6;
+ background:var(--bg);
+    color:var(--text);
+    transition:.3s;
   font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -8,7 +36,7 @@ body {
 
 .admin-header {
   height: 80px;
-  background: white;
+  background: var(--surface);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -106,6 +134,7 @@ ADMIN NOTIFICATIONS
   align-items: center;
   justify-content: center;
   font-weight: bold;
+  box-shadow: rgba(0, 0, 0, 0.06);
 }
 
 .notification-menu {
@@ -118,6 +147,7 @@ ADMIN NOTIFICATIONS
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
   overflow: hidden;
   opacity: 0;
+  overflow: auto;
   visibility: hidden;
   transform: translateY(15px);
   transition: 0.3s;
@@ -205,6 +235,14 @@ ADMIN NOTIFICATIONS
   color: #3b82f6;
   font-weight: 600;
 }
+.notification-footer {
+  text-decoration: none;
+  letter-spacing: 1px;
+}
+.notification-header a {
+  text-decoration: none;
+  letter-spacing: 1px;
+}
 
 /* PROFILE */
 .admin-profile {
@@ -243,7 +281,11 @@ ADMIN NOTIFICATIONS
 
   margin-bottom: 35px;
 }
-
+.card-header a {
+  letter-spacing: 1px;
+  text-decoration: none;
+  color: #d97706;
+}
 .admin-dashboard-header h1 {
   font-size: 34px;
   color: #111827;
@@ -577,7 +619,6 @@ ADMIN NOTIFICATIONS
   box-shadow: 0px 0px 9px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   position: sticky;
   top: 0;
   margin: 40px 0px 0px 0px;
@@ -612,22 +653,18 @@ ADMIN NOTIFICATIONS
   display: flex;
   flex-direction: column;
   gap: 8px;
+  margin-top: 20px;
 }
 
 .admin-sidebar nav a {
   text-decoration: none;
   color: black;
-
   display: flex;
-
   align-items: center;
-
   gap: 15px;
-
+  font-weight: 500;
   padding: 14px 16px;
-
   border-radius: 12px;
-
   transition: 0.3s;
 }
 .admin-sidebar nav a:hover {
@@ -642,17 +679,24 @@ ADMIN NOTIFICATIONS
   font-size: 18px;
 }
 .sidebar-footer {
-  margin-top: 40px;
-
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-
+  margin-top: auto;
   padding-top: 20px;
-}
-
+ border-top:1px solid var(--border);}
 .sidebar-footer a {
   text-decoration: none;
   color: #ef4444;
   display: flex;
   gap: 12px;
   align-items: center;
+}
+
+.chart-container{
+    width:100%;
+    height:380px;
+    position:relative;
+}
+
+.chart-container canvas{
+    width:100%!important;
+    height:100%!important;
 }
