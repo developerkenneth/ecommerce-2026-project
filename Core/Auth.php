@@ -2,6 +2,8 @@
 
 namespace App\Core;
 
+require_once("config.php");
+
 use App\Utilities\Helper;
 use Exception;
 

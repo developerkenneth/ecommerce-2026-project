@@ -46,7 +46,7 @@ class Mailer
             $mail->send();
             return "successful";
         } catch (Exception $e) {
-            return  "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+            return  "Message could not be sent. Mailer Error: {$e->errorMessage()}";
         }
     }
 }

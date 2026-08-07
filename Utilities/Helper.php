@@ -2,6 +2,7 @@
 
 namespace App\Utilities;
 
+require_once("../Core/config.php");
 class Helper
 {
 
@@ -37,7 +38,7 @@ class Helper
 
     public static function redirect($url)
     {
-        header("location:$url");
+        header("location:" . WWW_ROOT . "/$url");
     }
 
     public static function isLargeFile($file_size)
