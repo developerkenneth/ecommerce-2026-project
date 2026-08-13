@@ -51,6 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] == "PUT") {
                 'success' => false
             ]
         );
+        exit;
     }
 
     $userData  = $user->findUserById($userId);
@@ -126,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] == "PUT") {
     try {
 
         User::update($userId, $datas);
-        $response->statusCode(201)->jsonResponse([
+        $response->statusCode(200)->jsonResponse([
             'message' => "user account has been updated successfully",
             'success' => false
         ]);

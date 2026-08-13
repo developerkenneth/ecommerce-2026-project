@@ -100,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === "PATCH") {
     }
 
 
-    if (!Helper::verifyPassword($data['old_password'], $user->password)) {
+    if (!Helper::verifyPassword($data['old_password'], $user->password )) {
         $response->statusCode(400)->jsonResponse([
             "message" => "current password does not match",
             "success" => false

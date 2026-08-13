@@ -85,7 +85,7 @@ require_once "components/user/head.php";
 
             </div>
 
-            </div>
+         
 
 
             <!-- PRODUCT INFO -->
@@ -172,13 +172,7 @@ require_once "components/user/head.php";
 
                 </div>
 
-                <!-- <div class="form-group">
-
-                    <label>Short Description</label>
-
-                    <textarea rows="3"></textarea>
-
-                </div> -->
+           
 
                 <div class="form-group">
 

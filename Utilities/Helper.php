@@ -2,7 +2,7 @@
 
 namespace App\Utilities;
 
-require_once("../Core/config.php");
+require_once __DIR__ . "/../Core/config.php";
 class Helper
 {
 

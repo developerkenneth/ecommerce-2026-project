@@ -53,7 +53,7 @@ function displayProducts(products) {
 }
 
 async function addToCart(id) {
-  const response = await fetch(`http://localhost/e-commerce.com/api/products.php?id=${id}`);
+  const response = await fetch(`http://localhost/fullprojectv1/api/products.php?id=${id}`);
 
   const data = await response.json();
 
@@ -66,7 +66,7 @@ async function addToCart(id) {
   alert("Product added to cart");
 }
 
-fetchProducts("http://localhost/e-commerce.com/api/products.php");
+fetchProducts("http://localhost/fullprojectv1/api/products.php");
 
 
 // search functionality
@@ -79,7 +79,7 @@ const handleSearch = async (event) => {
   loaderContainer.classList.remove("hidden");
 
   try {
-    const response = await fetchProducts(`http://localhost/e-commerce.com/api/products.php?search=${searchKey}`);
+    const response = await fetchProducts(`http://localhost/fullprojectv1/api/products.php?search=${searchKey}`);
   } catch (error) {
     console.error(error);
   }
@@ -97,7 +97,7 @@ const handleFilter = async (e) => {
 
   try {
     productsContainer.classList.add("hidden");
-    const data = await fetchProducts(`http://localhost/e-commerce.com/api/products.php?max_price=${maxPrice}`);
+    const data = await fetchProducts(`http://localhost/fullprojectv1/api/products.php?max_price=${maxPrice}`);
   } catch (error) {
     console.error(error);
   }
