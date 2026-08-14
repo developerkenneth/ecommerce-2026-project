@@ -289,6 +289,7 @@ function createProductCard(product) {
 
     `;
 
+
   const addButton = card.querySelector(".add-cart-btn");
 
   const viewButton = card.querySelector(".view-product-btn");
@@ -559,33 +560,194 @@ function viewProduct(uuid) {
    CART
 ========================================= */
 
-function addToCart(product) {
-  let cart = JSON.parse(localStorage.getItem("gabs_cart")) || [];
+async function addToCart(product) {
 
-  const existing = cart.find((item) => item.uuid === product.uuid);
+  const productUuid = product?.uuid;
 
-  if (existing) {
-    existing.quantity++;
-  } else {
-    cart.push({
-      uuid: product.uuid,
+  if (!productUuid) {
 
-      name: product.name,
+    console.error("Product UUID is missing:", product);
 
-      price: Number(product.price),
+    showCartMessage("Unable to add this product.");
 
-      brand: product.brand,
-
-      photos: product.photos,
-
-      quantity: 1,
-    });
+    return;
   }
 
-  localStorage.setItem("gabs_cart", JSON.stringify(cart));
 
-  showCartMessage(`${product.name} added to cart`);
+  const stock =
+    Number(product.stocks_available || 0);
+
+
+  if (stock < 1) {
+
+    showCartMessage("This product is out of stock.");
+
+    return;
+  }
+
+
+  const addButton =
+    productGrid.querySelector(
+      `.add-cart-btn[data-product-id="${CSS.escape(productUuid)}"]`
+    );
+
+
+  const originalText =
+    addButton ? addButton.innerHTML : "";
+
+
+  if (addButton) {
+
+    addButton.disabled = true;
+
+    addButton.innerHTML = `
+      <i class="fa-solid fa-spinner fa-spin"></i>
+      Adding...
+    `;
+
+  }
+
+
+  try {
+
+    const response = await fetch(
+      "./api/cart.php",
+      {
+        method: "POST",
+
+        credentials: "include",
+
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+
+        body: JSON.stringify({
+          product_uuid: productUuid,
+          quantity: 1
+        })
+      }
+    );
+
+
+    const rawResponse =
+      await response.text();
+
+
+    console.log(
+      "HOME CART API STATUS:",
+      response.status
+    );
+
+
+    console.log(
+      "HOME CART API RESPONSE:",
+      rawResponse
+    );
+
+
+    let data;
+
+    try {
+
+      data =
+        JSON.parse(rawResponse);
+
+    } catch (error) {
+
+      console.error(
+        "Cart API returned invalid JSON:",
+        rawResponse
+      );
+
+      throw new Error(
+        "The cart server returned an invalid response."
+      );
+    }
+
+
+    if (response.status === 401) {
+
+      showCartMessage(
+        "Please login before adding products to your cart."
+      );
+
+      return;
+    }
+
+
+    if (!response.ok || !data.success) {
+
+      throw new Error(
+        data.message ||
+        "Unable to add product to cart."
+      );
+    }
+
+
+    console.log(
+      "Homepage cart success:",
+      data
+    );
+
+
+    if (addButton) {
+
+      addButton.innerHTML = `
+        <i class="fa-solid fa-check"></i>
+        Added
+      `;
+
+    }
+
+
+    showCartMessage(
+      `${product.name} added to cart`
+    );
+
+
+    setTimeout(() => {
+
+      if (addButton) {
+
+        addButton.innerHTML =
+          originalText;
+
+        addButton.disabled = false;
+
+      }
+
+    }, 1200);
+
+
+  } catch (error) {
+
+    console.error(
+      "Homepage add to cart error:",
+      error
+    );
+
+
+    showCartMessage(
+      error.message ||
+      "Unable to add product to cart."
+    );
+
+
+    if (addButton) {
+
+      addButton.innerHTML =
+        originalText;
+
+      addButton.disabled = false;
+
+    }
+
+  }
+
 }
+
+
 
 /* =========================================
    CART MESSAGE

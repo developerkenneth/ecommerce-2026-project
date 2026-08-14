@@ -1,4 +1,6 @@
 <?php
+$pageTitle = "admin page";
+
 require_once("components/user/head.php");
 ?>
 <?php require_once("components/admin/header.php"); ?>

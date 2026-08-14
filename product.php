@@ -1,203 +1,213 @@
-<!DOCTYPE html>
-<html lang="en">
+<?php
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Details</title>
+$pageTitle = "Product Details";
 
-    <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+require_once "components/user/head.php";
 
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+?>
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="./assets/css/product.css">
-    <link rel="stylesheet" href="./assets/css/dashboard.css">
+<?php include_once "components/user/header.php"; ?>
 
-</head>
+<link rel="stylesheet" href="./assets/css/product.css">
 
-<body>
-
-    <!-- HEADER -->
-    <!-- HEADER -->
-    <header>
-
-        <div class="logo">
-            <h2> <a href="dashboard.php">GABSITE</a></h2>
-        </div>
-
-        <div class="search-box">
-
-
-            <input id="searchInput" type="text" placeholder="Search products...">
-            <button> <i class="fa-solid fa-magnifying-glass"></i></button>
-        </div>
-
-        <div class="nav-icons">
-            <!-- account help section -->
-
-            <div class="dropdown">
-
-                <div class="icon" id="account-help">
-                    <i class="fa-regular fa-user"></i>
-                    <span>Gabriel</span>
-                    <span><img src="./chevron-down.svg" class="chevron"></span>
-                </div>
-
-                <div class="account-options">
-                    <ul>
-                        <li><a href="#">Profile</a></li>
-                        <li><a href="#">Settings</a></li>
-                        <li><a href="#">Help</a></li>
-                        <li class="active"><a href="#">Logout</a></li>
-                    </ul>
-                </div>
-
-            </div>
-
-            <!-- help section -->
-            <div class="dropdown">
-
-                <div class="icon" id="help-icon">
-                    <i class="fa-solid fa-question-circle"></i>
-                    <span>Help</span>
-                    <span><img src="./chevron-down.svg" class="chevron"></span>
-                </div>
-
-                <div class="help-options">
-                    <ul>
-                        <li><a href="#">Help Center</a></li>
-                        <li><a href="#">Contact Support</a></li>
-                        <li><a href="#">FAQ</a></li>
-                        <li><a href="#">Report a Problem</a></li>
-                    </ul>
-                </div>
-
-            </div>
-
-            <!-- cart section -->
-            <div class="dropdown">
-
-                <div class="icon" id="cart-icon">
-                    <i class="fa-solid fa-cart-shopping"></i>
-                    <span>Cart</span>
-                    <span><img src="./chevron-down.svg" class="chevron"></span>
-                </div>
-
-                <div class="cart-options">
-                    <ul>
-                        <li><a href="#">View Cart</a></li>
-                        <li><a href="#">Checkout</a></li>
-                        <li><a href="#">Order History</a></li>
-                        <li><a href="#">Track Order</a></li>
-                    </ul>
-                </div>
-            </div>
-
-        </div>
-
-    </header>
-
-    <!-- section for more product -->
-
+<main class="single-product-page">
 
     <!-- BREADCRUMB -->
     <section class="breadcrumb">
-        <a href="#">Home</a>
+        <a href="./index.php">Home</a>
         <span>/</span>
-        <a href="#">Electronics</a>
-        <span>/</span>
-        <a href="#">Laptops</a>
-        <span>/</span>
-        <strong>HP EliteBook 840 G7</strong>
+        <strong id="breadcrumbProduct">Product</strong>
     </section>
 
-    <!-- PRODUCT SECTION -->
-    <section class="product-container">
 
-        <!-- LEFT -->
+    <!-- LOADING -->
+    <section id="productLoading" class="product-loading">
+
+        <div class="loader"></div>
+
+        <p>Loading product...</p>
+
+    </section>
+
+
+    <!-- ERROR -->
+    <section id="productError" class="product-error" style="display:none;">
+
+        <i class="fa-solid fa-circle-exclamation"></i>
+
+        <h2>Product Not Found</h2>
+
+        <p id="productErrorMessage">
+            We couldn't find this product.
+        </p>
+
+        <a href="./index.php">
+            Back to Products
+        </a>
+
+    </section>
+
+
+    <!-- PRODUCT -->
+    <section
+        id="productContent"
+        class="product-container"
+        style="display:none;">
+
+        <!-- LEFT SIDE -->
         <div class="product-gallery">
 
             <div class="main-image">
-                <img src="./img/laptop1.png" id="mainImage" alt="Product">
-            </div>
 
-            <div class="thumbnail-images">
-
-                <img src="./img/laptop1.png" class="thumb active">
-
-                <img src="./img/laptop2.png" class="thumb">
-
-                <img src="./img/laptop3.png" class="thumb">
-
-                <img src="./img/laptop4.png" class="thumb">
+                <img
+                    src=""
+                    id="mainImage"
+                    alt="Product">
 
             </div>
+
+            <div
+                class="thumbnail-images"
+                id="thumbnailImages"></div>
 
         </div>
 
-        <!-- RIGHT -->
+
+        <!-- RIGHT SIDE -->
         <div class="product-details">
 
-            <h1>HP EliteBook 840 G7</h1>
+            <div class="product-category" id="productCategory">
+                Product
+            </div>
+
+            <h1 id="productName">
+                Product Name
+            </h1>
+
 
             <div class="rating">
 
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star-half-alt"></i>
+                <span class="stars">
+                    ★★★★★
+                </span>
 
-                <span>(212 Reviews)</span>
+                <span>
+                    No reviews yet
+                </span>
 
             </div>
+
 
             <div class="price">
 
-                <h2>₦350,000</h2>
+                <h2 id="productPrice">
+                    ₦0.00
+                </h2>
 
-                <del>₦420,000</del>
+                <del id="oldPrice" style="display:none;"></del>
 
-                <span class="discount">17% OFF</span>
+                <span
+                    class="discount"
+                    id="discountBadge"
+                    style="display:none;">
+                    0% OFF
+                </span>
 
             </div>
 
-            <p class="stock">
+
+            <p class="stock" id="stockStatus">
+
                 <i class="fas fa-check-circle"></i>
+
                 In Stock
-            </p>
-
-            <p class="description">
-
-                The HP EliteBook 840 G7 is a premium business laptop with
-                Intel Core i5 processor, 16GB RAM, 512GB SSD and Full HD display.
 
             </p>
 
-            <!-- Quantity -->
 
-            <div class="quantity">
+            <p
+                class="description"
+                id="shortDescription">
+                Product description
+            </p>
 
-                <button id="minus">-</button>
 
-                <input type="text" value="1" id="qty" readonly>
+            <!-- BRAND -->
+            <div class="product-meta">
 
-                <button id="plus">+</button>
+                <div>
+                    <span>Brand</span>
+                    <strong id="productBrand">-</strong>
+                </div>
+
+                <div>
+                    <span>Category</span>
+                    <strong id="metaCategory">-</strong>
+                </div>
+
+                <div>
+                    <span>Available</span>
+                    <strong id="stockQuantity">-</strong>
+                </div>
 
             </div>
 
+
+            <!-- QUANTITY -->
+            <div class="quantity-section">
+
+                <label>
+                    Quantity
+                </label>
+
+                <div class="quantity">
+
+                    <button
+                        type="button"
+                        id="minus">
+                        -
+                    </button>
+
+                    <input
+                        type="number"
+                        id="qty"
+                        value="1"
+                        min="1"
+                        readonly>
+
+                    <button
+                        type="button"
+                        id="plus">
+                        +
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- BUTTONS -->
             <div class="buttons">
 
-                <button class="cart-btn">
+                <button
+                    type="button"
+                    class="cart-btn"
+                    id="addToCartBtn">
+
                     <i class="fas fa-cart-shopping"></i>
+
                     Add to Cart
+
                 </button>
 
-                <button class="buy-btn">
+
+                <button
+                    type="button"
+                    class="buy-btn"
+                    id="buyNowBtn">
+
                     Buy Now
+
                 </button>
 
             </div>
@@ -206,260 +216,230 @@
 
     </section>
 
-    <section class="highlights">
 
-        <h2>✔ Product Highlights</h2>
+    <!-- PRODUCT INFORMATION -->
+    <section
+        id="productInformation"
+        class="product-information"
+        style="display:none;">
 
-        <ul>
+        <!-- DESCRIPTION -->
+        <div class="information-card">
 
+            <div class="section-heading">
 
-            <li>✔ Intel Core i5 Processor</li>
+                <span class="heading-icon">
+                    <i class="fa-solid fa-align-left"></i>
+                </span>
 
-            <li>✔ 16GB DDR4 RAM</li>
+                <div>
 
-            <li>✔ 512GB SSD Storage</li>
+                    <h2>Product Description</h2>
 
-            <li>✔ 14-inch Full HD Display</li>
+                    <p>
+                        Everything you need to know about this product.
+                    </p>
 
-            <li>✔ Fingerprint Sensor</li>
-
-            <li>✔ Backlit Keyboard</li>
-
-            <li>✔ Windows 11 Pro</li>
-
-        </ul>
-
-    </section>
-
-    <section class="description-box">
-
-        <h2>Product Description</h2>
-
-        <p class="full-desc">
-
-
-
-        </p>
-
-    </section>
-    <section class="specifications">
-
-        <h2>Specifications</h2>
-
-        <table>
-
-            <tr>
-                <td>Brand</td>
-                <td>HP</td>
-            </tr>
-
-            <tr>
-                <td>Model</td>
-                <td>EliteBook 840 G7</td>
-            </tr>
-
-            <tr>
-                <td>Processor</td>
-                <td>Intel Core i5</td>
-            </tr>
-
-            <tr>
-                <td>RAM</td>
-                <td>16GB</td>
-            </tr>
-
-            <tr>
-                <td>Storage</td>
-                <td>512GB SSD</td>
-            </tr>
-
-            <tr>
-                <td>Display</td>
-                <td>14-inch Full HD</td>
-            </tr>
-
-            <tr>
-                <td>Operating System</td>
-                <td>Windows 11 Pro</td>
-            </tr>
-
-        </table>
-
-    </section>
-
-    <section class="delivery">
-
-        <h2>Delivery Information</h2>
-
-        <div class="delivery-card">
-
-            <div>
-
-                <h4>🚚 Standard Delivery</h4>
-
-                <p>Delivery within 2-5 working days.</p>
+                </div>
 
             </div>
 
-            <div>
+            <div
+                id="fullDescription"
+                class="full-description"></div>
 
-                <h4>🔄 Easy Returns</h4>
+        </div>
 
-                <p>Return within 7 days after delivery.</p>
+
+        <!-- PRODUCT DETAILS -->
+        <div class="information-card">
+
+            <div class="section-heading">
+
+                <span class="heading-icon">
+                    <i class="fa-solid fa-circle-info"></i>
+                </span>
+
+                <div>
+
+                    <h2>Product Information</h2>
+
+                    <p>
+                        Product specifications and information.
+                    </p>
+
+                </div>
 
             </div>
 
-            <div>
 
-                <h4>🛡 Warranty</h4>
+            <div class="specification-list">
 
-                <p>12 Months Manufacturer Warranty.</p>
+                <div class="spec-row">
+
+                    <span>Product Name</span>
+
+                    <strong id="specName">-</strong>
+
+                </div>
+
+
+                <div class="spec-row">
+
+                    <span>Brand</span>
+
+                    <strong id="specBrand">-</strong>
+
+                </div>
+
+
+                <div class="spec-row">
+
+                    <span>Category</span>
+
+                    <strong id="specCategory">-</strong>
+
+                </div>
+
+
+                <div class="spec-row">
+
+                    <span>Stock</span>
+
+                    <strong id="specStock">-</strong>
+
+                </div>
+
+
+                <div class="spec-row">
+
+                    <span>Product Status</span>
+
+                    <strong id="specStatus">-</strong>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+        <!-- DELIVERY -->
+        <div class="information-card">
+
+            <div class="section-heading">
+
+                <span class="heading-icon">
+                    <i class="fa-solid fa-truck"></i>
+                </span>
+
+                <div>
+
+                    <h2>Delivery & Returns</h2>
+
+                    <p>
+                        Important information about your order.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="delivery-grid">
+
+                <div class="delivery-item">
+
+                    <i class="fa-solid fa-truck-fast"></i>
+
+                    <div>
+
+                        <h4>Delivery</h4>
+
+                        <p>
+                            Delivery information will be provided
+                            during checkout.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="delivery-item">
+
+                    <i class="fa-solid fa-rotate-left"></i>
+
+                    <div>
+
+                        <h4>Returns</h4>
+
+                        <p>
+                            Return policies depend on the seller
+                            and product.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="delivery-item">
+
+                    <i class="fa-solid fa-shield-halved"></i>
+
+                    <div>
+
+                        <h4>Secure Shopping</h4>
+
+                        <p>
+                            Your order information is protected.
+                        </p>
+
+                    </div>
+
+                </div>
 
             </div>
 
         </div>
 
     </section>
+
 
     <!-- RELATED PRODUCTS -->
+    <section
+        id="relatedSection"
+        class="related-products"
+        style="display:none;">
 
-    <section class="related-products">
+        <div class="related-header">
 
-        <h2>You May Also Like</h2>
+            <div>
 
-        <div class="product-grid">
+                <span>EXPLORE MORE</span>
 
-            <div class="product-card">
-
-                <span class="badge">-15%</span>
-
-                <img src="./img/laptop4.png" alt="Laptop">
-
-                <h3>HP EliteBook 850</h3>
-
-                <div class="stars">
-                    ★★★★★
-                </div>
-
-                <p class="price">₦320,000</p>
-
-                <button>View Product</button>
+                <h2>You May Also Like</h2>
 
             </div>
 
-            <div class="product-card">
-
-                <span class="badge">NEW</span>
-
-                <img src="./img/laptop1.png" alt="Laptop">
-
-                <h3>Dell Latitude</h3>
-
-                <div class="stars">
-                    ★★★★☆
-                </div>
-
-                <p class="price">₦410,000</p>
-
-                <button>View Product</button>
-
-            </div>
-
-            <div class="product-card">
-
-                <span class="badge">HOT</span>
-
-                <img src="./img/laptop2.png" alt="Laptop">
-
-                <h3>Lenovo ThinkPad</h3>
-
-                <div class="stars">
-                    ★★★★★
-                </div>
-
-                <p class="price">₦365,000</p>
-
-                <button>View Product</button>
-
-            </div>
-
-            <div class="product-card">
-
-                <span class="badge">SALE</span>
-
-                <img src="./img/laptop3.png" alt="Laptop">
-
-                <h3>MacBook Air</h3>
-
-                <div class="stars">
-                    ★★★★★
-                </div>
-
-                <p class="price">₦850,000</p>
-
-                <button>View Product</button>
-
-            </div>
+            <a href="./index.php">
+                View All Products
+            </a>
 
         </div>
+
+
+        <div
+            id="relatedProducts"
+            class="product-grid"></div>
 
     </section>
 
-    <footer>
+</main>
 
-        <div class="footer-content">
 
-            <div>
-                <h3>MyShop</h3>
-                <p>Your trusted online shopping destination.</p>
-            </div>
+<script src="./assets/js/product.js"></script>
 
-            <div>
-
-                <h4>Quick Links</h4>
-
-                <ul>
-
-                    <li><a href="#">Home</a></li>
-
-                    <li><a href="#">Shop</a></li>
-
-                    <li><a href="#">Contact</a></li>
-
-                    <li><a href="#">About</a></li>
-
-                </ul>
-
-            </div>
-
-            <div>
-
-                <h4>Customer Service</h4>
-
-                <ul>
-
-                    <li><a href="#">Returns</a></li>
-
-                    <li><a href="#">Privacy</a></li>
-
-                    <li><a href="#">Terms</a></li>
-
-                    <li><a href="#">Support</a></li>
-
-                </ul>
-
-            </div>
-
-        </div>
-
-        <p class="copyright">
-            © 2026 GABSITE. All Rights Reserved.
-        </p>
-
-    </footer>
-    <script src="./assets/js/dashborad.js" ></script>
-    <script src="./assets/js/product.js"></script>
-
-</body>
-
-</html>
+<?php include_once "./components/user/footer.php"; ?>

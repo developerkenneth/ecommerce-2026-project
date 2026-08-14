@@ -1,5 +1,5 @@
 <?php
-
+$pageTitle = "homepage";
 require_once("components/user/head.php");
 require_once("components/user/header.php");
 

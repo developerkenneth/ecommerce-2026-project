@@ -1,4 +1,6 @@
 <?php
+$pageTitle = "settings";
+
 require_once("components/user/head.php");
 ?>
 
