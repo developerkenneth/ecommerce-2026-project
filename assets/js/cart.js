@@ -15,6 +15,56 @@ document.addEventListener("DOMContentLoaded", () => {
   const clearCartBtn = document.getElementById("clearCartBtn");
   const retryCartBtn = document.getElementById("retryCartBtn");
   const checkoutBtn = document.getElementById("checkoutBtn");
+  const payNowBtn = document.querySelector("#payNowBtn");
+
+
+  async function verifyPayment(reference, items) {
+
+    const response = await fetch("/api/verify-payment.php", {
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+
+      // verify payment here
+      body: JSON.stringify({
+        items: items,
+        reference: reference
+      })
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      console.log("Payment verified!");
+    } else {
+      console.log("Payment verification failed");
+    }
+  }
+
+  const payNow = (totalAmount, items) => {
+    const paystack = new PaystackPop();
+    paystack.newTransaction({
+      key: "pk_test_017f838286d7ca36f5626e847298d83cd143b0dd",
+      email: "customer@example.com",
+      amount: totalAmount * 100,
+      currency: "NGN",
+
+      onSuccess: (transaction) => {
+        console.log(`Payment successful ${totalAmount}`);
+        console.log("Reference:", transaction.reference);
+
+        // Send the reference to your Laravel/PHP backend
+        verifyPayment(transaction.reference, items);
+      },
+
+      onCancel: () => {
+        console.log("Payment cancelled");
+      }
+    });
+  }
 
   loadCart();
 
@@ -54,8 +104,15 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       console.log("CART DATA:", data.cart);
-
       renderCart(data.cart);
+
+
+
+
+      console.log(data.cart.subtotal);
+      payNowBtn.addEventListener("click", () => {
+        payNow(data.cart.subtotal, data.cart);
+      });
     } catch (error) {
       console.error("Cart loading error:", error);
 
@@ -97,13 +154,11 @@ document.addEventListener("DOMContentLoaded", () => {
       cartItems.appendChild(itemElement);
     });
 
-    cartItemCount.textContent = `${totalItems} ${
-      totalItems === 1 ? "item" : "items"
-    } in your cart`;
+    cartItemCount.textContent = `${totalItems} ${totalItems === 1 ? "item" : "items"
+      } in your cart`;
 
-    cartProductsCount.textContent = `${items.length} ${
-      items.length === 1 ? "product" : "products"
-    }`;
+    cartProductsCount.textContent = `${items.length} ${items.length === 1 ? "product" : "products"
+      }`;
 
     updateSummary(totalItems, subtotal);
   }
@@ -466,3 +521,5 @@ document.addEventListener("DOMContentLoaded", () => {
     return div.innerHTML;
   }
 });
+
+

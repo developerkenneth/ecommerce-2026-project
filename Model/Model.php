@@ -102,4 +102,28 @@ class Model
         $stmt = $connect->prepare($sql);
         return $stmt->execute(['id' => $id]) ? true : false;
     }
+
+    // get data
+    /**
+     * @param int $id value is set to default value o null
+     * @param string $tableName pass in the table name that u want to query
+     */
+    public static function get($tableName, $id = null)
+    {
+        $db = new Db();
+        $connect = $db->connect();
+
+        if ($id) {
+            $sql = "SELECT * FROM $tableName WHERE id = :id LIMIT 1";
+            $stmt = $connect->prepare($sql);
+            $stmt->execute(['id' => $id]);
+            $result = $stmt->fetch();
+            return $result;
+        }
+
+        $sql = "SELECT * FROM $tableName";
+        $stmt = $connect->query($sql);
+        $result = $stmt->fetchALl();
+        return $result;
+    }
 }

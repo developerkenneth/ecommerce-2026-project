@@ -6,6 +6,30 @@ use App\Utilities\Response;
 
 $response = new Response();
 
+
+// FETCH CATEGORIES API ENDPOINT
+
+if ($_SERVER['REQUEST_METHOD'] === "GET") {
+    try {
+
+        // show products
+        http_response_code(200);
+        $categories = Model::get("categories");
+        $response->jsonResponse([
+            'message' => 'successfull',
+            'success' => true,
+            'categories' => $categories
+        ]);
+        exit;
+    } catch (\Exception $error) {
+        http_response_code(500);
+        $response->jsonResponse([
+            'success' => false,
+            'message' => $error->getMessage()
+        ]);
+        exit;
+    }
+}
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
     $raw_data = file_get_contents("php://input");

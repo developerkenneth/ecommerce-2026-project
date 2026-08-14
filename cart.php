@@ -229,9 +229,9 @@ require_once "components/user/head.php";
             <button
                 type="button"
                 class="checkout-btn"
-                id="checkoutBtn">
+                id="payNowBtn">
 
-                Proceed to Checkout
+                Pay Now
 
                 <i class="fa-solid fa-arrow-right"></i>
 
@@ -255,6 +255,7 @@ require_once "components/user/head.php";
 </main>
 
 
+<script src="https://js.paystack.co/v2/inline.js"></script>
 <script src="./assets/js/cart.js"></script>
-
+<script src="./assets/js/paystack.js"></script>
 <?php require_once "./components/user/footer.php"; ?>
