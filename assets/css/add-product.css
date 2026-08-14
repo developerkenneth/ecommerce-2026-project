@@ -92,22 +92,6 @@ html {
   line-height: 1;
   margin-bottom: 0 12px;
 }
-.typing-wrapper {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  font-size: 16px;
-  font-weight: 600;
-  color: #ff6b00;
-}
-
-#typing {
-  font-size: 18px;
-  font-weight: 500px;
-  color: #ff6b00;
-}
 
 .cursor {
   /* width:2px;

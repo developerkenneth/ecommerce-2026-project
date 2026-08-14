@@ -1,40 +1,60 @@
 <?php
-$pageTitle =  "Dasboard";
+
+$pageTitle = "Dashboard";
+
 require_once "components/user/head.php";
+require_once "components/user/header.php";
 
 ?>
 
+<link rel="stylesheet" href="./assets/css/dashboard.css">
 
-
-<?php include_once "components/user/header.php" ?>
-<!-- DASHBOARD -->
 <section class="dashboard-container">
 
-
     <?php require_once "components/user/leftbar.php"; ?>
-    <!-- RIGHT CONTENT -->
-    <div class="dashboard-content">
+
+
+    <main class="dashboard-content">
 
         <div class="dashboard-header">
 
             <div>
 
-                <h1>Seller Dashboard</h1>
+                <span class="dashboard-eyebrow">
+                    SELLER CENTER
+                </span>
 
-                <p>Welcome back, <?= $user->name ?> 👋</p>
+                <h1>
+                    Dashboard
+                </h1>
+
+                <p>
+                    Manage your products, inventory and marketplace activity.
+                </p>
 
             </div>
 
-            <button class="add-product-btn">
+
+            <button
+                type="button"
+                class="add-product-btn"
+                id="addProductBtn">
+
                 <i class="fa-solid fa-plus"></i>
+
                 Add Product
+
             </button>
 
         </div>
 
-        <div class="dashboard-cards">
 
-            <div class="card">
+        <!-- DASHBOARD STATS -->
+
+        <section class="dashboard-cards">
+
+
+            <article class="card">
 
                 <div class="card-icon">
                     <i class="fa-solid fa-box"></i>
@@ -42,307 +62,419 @@ require_once "components/user/head.php";
 
                 <div>
 
-                    <h4>Total Products</h4>
-                </div>
+                    <span class="card-label">
+                        Total Products
+                    </span>
 
-            </div>
+                    <h2 id="totalProducts">
+                        0
+                    </h2>
 
-            <div class="card">
-
-                <div class="card-icon">
-                    <i class="fa-solid fa-cart-shopping"></i>
-                </div>
-
-                <div>
-
-                    <h4>Total Orders</h4>
-
+                    <small>
+                        Products in marketplace
+                    </small>
 
                 </div>
 
-            </div>
+            </article>
 
-            <div class="card">
 
-                <div class="card-icon">
-                    <i class="fa-solid fa-users"></i>
+            <article class="card">
+
+                <div class="card-icon inventory-icon">
+                    <i class="fa-solid fa-layer-group"></i>
                 </div>
 
                 <div>
 
-                    <h4>Customers</h4>
+                    <span class="card-label">
+                        Inventory Units
+                    </span>
 
+                    <h2 id="totalInventory">
+                        0
+                    </h2>
+
+                    <small>
+                        Total available stock
+                    </small>
 
                 </div>
 
-            </div>
+            </article>
 
-            <div class="card">
 
-                <div class="card-icon">
-                    <i class="fa-solid fa-naira-sign"></i>
+            <article class="card">
+
+                <div class="card-icon success-icon">
+                    <i class="fa-solid fa-circle-check"></i>
                 </div>
 
                 <div>
 
-                    <h4>Revenue</h4>
+                    <span class="card-label">
+                        In Stock
+                    </span>
 
+                    <h2 id="inStockProducts">
+                        0
+                    </h2>
 
+                    <small>
+                        Products currently available
+                    </small>
 
                 </div>
+
+            </article>
+
+
+            <article class="card">
+
+                <div class="card-icon danger-icon">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+
+                <div>
+
+                    <span class="card-label">
+                        Out of Stock
+                    </span>
+
+                    <h2 id="outOfStockProducts">
+                        0
+                    </h2>
+
+                    <small>
+                        Products needing attention
+                    </small>
+
+                </div>
+
+            </article>
+
+
+        </section>
+
+
+        <!-- RECENT PRODUCTS -->
+
+        <section class="dashboard-section recent-products">
+
+            <div class="section-header">
+
+                <div>
+
+                    <h2>
+                        Recent Products
+                    </h2>
+
+                    <p>
+                        Your latest products from the marketplace.
+                    </p>
+
+                </div>
+
+
+                <a
+                    href="./index.php#products"
+                    class="view-all">
+
+                    View Marketplace
+
+                </a>
 
             </div>
 
 
+            <div
+                class="dashboard-loading"
+                id="productsLoading">
+
+                <i class="fa-solid fa-spinner fa-spin"></i>
+
+                <span>
+                    Loading products...
+                </span>
+
+            </div>
 
 
+            <div
+                class="dashboard-error"
+                id="productsError">
 
-        </div>
+                <i class="fa-solid fa-circle-exclamation"></i>
 
+                <div>
 
-        <div class="dashboard-body">
+                    <strong>
+                        Unable to load products
+                    </strong>
 
-            <!-- Recent Products -->
-
-            <div class="recent-products">
-
-                <div class="section-header">
-
-                    <h2>Recent Products</h2>
-
-                    <a href="#" class="view-all">View All</a>
+                    <p id="productsErrorMessage">
+                        Something went wrong.
+                    </p>
 
                 </div>
 
-                <table>
+
+                <button
+                    type="button"
+                    id="retryProducts">
+
+                    Retry
+
+                </button>
+
+            </div>
+
+
+            <div
+                class="dashboard-empty"
+                id="productsEmpty">
+
+                <i class="fa-solid fa-box-open"></i>
+
+                <h3>
+                    No products yet
+                </h3>
+
+                <p>
+                    Add your first product to start building your marketplace.
+                </p>
+
+                <a href="./add.php">
+                    Add Product
+                </a>
+
+            </div>
+
+
+            <div
+                class="table-wrapper"
+                id="productsTableWrapper">
+
+                <table class="products-table">
 
                     <thead>
 
                         <tr>
 
-                            <th>Image</th>
+                            <th>
+                                Product
+                            </th>
 
-                            <th>Product</th>
+                            <th>
+                                Category
+                            </th>
 
-                            <th>Category</th>
+                            <th>
+                                Price
+                            </th>
 
-                            <th>Price</th>
+                            <th>
+                                Stock
+                            </th>
 
-                            <th>Stock</th>
+                            <th>
+                                Status
+                            </th>
 
-                            <th>Status</th>
-
-                            <th>Action</th>
+                            <th>
+                                Actions
+                            </th>
 
                         </tr>
 
                     </thead>
 
-                    <tbody>
 
-                        <tr>
-
-                            <td>
-                                <img src="img/laptop1.png" class="product-img">
-                            </td>
-
-                            <td>name</td>
-
-                            <td>Laptops</td>
-
-                            <td>price</td>
-
-                            <td>18</td>
-
-                            <td>
-                                <span class="status in-stock">
-                                    In Stock
-                                </span>
-                            </td>
-
-                            <td>
-
-                                <button class="edit-btn">
-                                    Edit
-                                </button>
-
-                                <button class="delete-btn">
-                                    Delete
-                                </button>
-
-                            </td>
-
-                        </tr>
-
-                        <tr>
-
-                            <td>
-                                <img src="img/laptop2.png" class="product-img">
-                            </td>
-
-                            <td>name</td>
-
-                            <td>Laptops</td>
-
-                            <td>price</td>
-
-                            <td>0</td>
-
-                            <td>
-                                <span class="status out-stock">
-                                    Out of Stock
-                                </span>
-                            </td>
-
-                            <td>
-
-                                <button class="edit-btn">
-                                    Edit
-                                </button>
-
-                                <button class="delete-btn">
-                                    Delete
-                                </button>
-
-                            </td>
-
-                        </tr>
-
-                    </tbody>
+                    <tbody id="recentProductsBody"></tbody>
 
                 </table>
 
             </div>
 
-        </div>
+        </section>
 
 
+        <!-- INVENTORY OVERVIEW -->
+
+        <section class="dashboard-grid">
 
 
-        <!-- SALES OVERVIEW -->
+            <div class="dashboard-section inventory-overview">
 
-        <div class="sales-overview">
+                <div class="section-header">
 
-            <div class="section-header">
+                    <div>
 
-                <h2>Sales Overview</h2>
+                        <h2>
+                            Inventory Overview
+                        </h2>
 
-                <select>
+                        <p>
+                            A quick look at your inventory health.
+                        </p>
 
-                    <option>This Week</option>
-                    <option>This Month</option>
-                    <option>This Year</option>
+                    </div>
 
-                </select>
+                </div>
+
+
+                <div class="inventory-stats">
+
+
+                    <div class="inventory-stat">
+
+                        <span class="inventory-stat-icon">
+                            <i class="fa-solid fa-boxes-stacked"></i>
+                        </span>
+
+                        <div>
+
+                            <strong id="inventoryProducts">
+                                0
+                            </strong>
+
+                            <span>
+                                Total products
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="inventory-stat">
+
+                        <span class="inventory-stat-icon green">
+                            <i class="fa-solid fa-check"></i>
+                        </span>
+
+                        <div>
+
+                            <strong id="inventoryInStock">
+                                0
+                            </strong>
+
+                            <span>
+                                In stock
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="inventory-stat">
+
+                        <span class="inventory-stat-icon red">
+                            <i class="fa-solid fa-xmark"></i>
+                        </span>
+
+                        <div>
+
+                            <strong id="inventoryOutOfStock">
+                                0
+                            </strong>
+
+                            <span>
+                                Out of stock
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
 
             </div>
 
-            <div class="chart-placeholder">
 
+            <div class="dashboard-section dashboard-actions-card">
+
+                <div class="section-header">
+
+                    <div>
+
+                        <h2>
+                            Quick Actions
+                        </h2>
+
+                        <p>
+                            Common seller actions.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="quick-actions">
+
+                    <a href="./add.php">
+                        <i class="fa-solid fa-plus"></i>
+                        Add Product
+                    </a>
+
+                    <a href="./index.php#products">
+                        <i class="fa-solid fa-store"></i>
+                        View Marketplace
+                    </a>
+
+                    <a href="./settings.php">
+                        <i class="fa-solid fa-gear"></i>
+                        Settings
+                    </a>
+
+                    <a href="./product.php">
+                        <i class="fa-solid fa-box"></i>
+                        Products
+                    </a>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- FUTURE ORDERS AREA -->
+
+        <section class="dashboard-section coming-soon-section">
+
+            <div class="coming-soon-icon">
                 <i class="fa-solid fa-chart-line"></i>
+            </div>
 
-                <h3>Sales Analytics</h3>
+            <div>
 
-                <p>Your sales chart anaytics will appear here.</p>
+                <span class="dashboard-eyebrow">
+                    NEXT PHASE
+                </span>
+
+                <h2>
+                    Orders, Sales & Revenue
+                </h2>
+
+                <p>
+                    This section will become live when we connect the
+                    orders, payments and checkout system.
+                </p>
 
             </div>
 
-        </div>
+        </section>
 
 
-
-        <!-- product mangement  -->
-        <!-- RECENT ORDERS -->
-
-        <div class="recent-orders">
-
-            <div class="section-header">
-
-                <h2>Recent Orders</h2>
-
-                <a href="#" class="view-all">View All</a>
-
-            </div>
-
-            <table>
-
-                <thead>
-
-                    <tr>
-
-                        <th>Order ID</th>
-                        <th>Customer</th>
-                        <th>Product</th>
-                        <th>Amount</th>
-                        <th>Status</th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    <tr>
-
-                        <td>#ORD001</td>
-
-                        <td>John Doe</td>
-
-                        <td>HP EliteBook G7</td>
-
-                        <td>₦350,000</td>
-
-                        <td>
-                            <span class="badge delivered">
-                                Delivered
-                            </span>
-                        </td>
-
-                    </tr>
-
-                    <tr>
-
-                        <td>#ORD002</td>
-
-                        <td>Mary Johnson</td>
-
-                        <td>Dell Latitude</td>
-
-                        <td>₦420,000</td>
-
-                        <td>
-                            <span class="badge pending">
-                                Pending
-                            </span>
-                        </td>
-
-                    </tr>
-
-                    <tr>
-
-                        <td>#ORD003</td>
-
-                        <td>David Smith</td>
-
-                        <td>MacBook Air</td>
-
-                        <td>₦950,000</td>
-
-                        <td>
-                            <span class="badge cancelled">
-                                Cancelled
-                            </span>
-                        </td>
-
-                    </tr>
-
-                </tbody>
-
-            </table>
-
-        </div>
-    </div>
+    </main>
 
 </section>
 
-<?php include_once "./components/user/footer.php";
+
+
+<?php include_once "./components/user/footer.php"; ?>

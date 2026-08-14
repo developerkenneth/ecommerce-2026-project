@@ -1,78 +1,194 @@
-<!-- HEADER -->
-<header>
+<?php
 
-    <div class="logo">
-        <h2> <a href="dashboard.php">GABSITE</a></h2>
+use App\Core\Auth;
+
+$user = Auth::user();
+
+$currentPage = basename($_SERVER['PHP_SELF']);
+
+?>
+<link rel="stylesheet" href="./assets/css/header.css">
+
+<header class="site-header">
+
+    <div class="header-left">
+
+        <button
+            type="button"
+            class="mobile-menu-btn"
+            id="mobileMenuBtn"
+            aria-label="Open navigation">
+
+            <i class="fa-solid fa-bars"></i>
+
+        </button>
+
+
+        <a
+            href="./dashboard.php"
+            class="site-logo">
+
+            <span class="logo-mark">
+                G
+            </span>
+
+            <span class="logo-text">
+                GABSITE
+            </span>
+
+        </a>
+
     </div>
 
-    <div class="search-box">
 
+    <div class="header-search">
 
-        <input id="searchInput" type="text" placeholder="Search products...">
-        <button> <i class="fa-solid fa-magnifying-glass"></i></button>
+        <i class="fa-solid fa-magnifying-glass"></i>
+
+        <input
+            type="search"
+            id="globalSearch"
+            placeholder="Search products, orders, customers..."
+            autocomplete="off">
+
+        <kbd>
+            Ctrl K
+        </kbd>
+
     </div>
 
-    <div class="nav-icons">
-        <!-- account help section -->
 
-        <div class="dropdown">
+    <div class="header-actions">
 
-            <div class="icon" id="account-help">
-                <i class="fa-regular fa-user"></i>
-                <span>Gabriel</span>
-                <span><img src="./chevron-down.svg" class="chevron"></span>
+
+        <button
+            type="button"
+            class="header-action"
+            id="notificationBtn"
+            aria-label="Notifications">
+
+            <i class="fa-regular fa-bell"></i>
+
+            <span class="notification-dot"></span>
+
+        </button>
+
+
+        <a
+            href="./cart.php"
+            class="header-action"
+            aria-label="Cart">
+
+            <i class="fa-solid fa-cart-shopping"></i>
+
+            <span
+                class="cart-count"
+                id="headerCartCount">
+                0
+            </span>
+
+        </a>
+
+
+        <div class="profile-wrapper">
+
+            <button
+                type="button"
+                class="profile-trigger"
+                id="profileTrigger">
+
+                <span class="profile-avatar">
+
+                    <?php if (!empty($user->profile_picture)): ?>
+
+                        <img
+                            src="./assets/photos/<?= htmlspecialchars($user->profile_picture) ?>"
+                            alt="Profile">
+
+                    <?php else: ?>
+
+                        <?= strtoupper(substr($user->name ?? "U", 0, 1)) ?>
+
+                    <?php endif; ?>
+
+                </span>
+
+
+                <span class="profile-info">
+
+                    <strong>
+                        <?= htmlspecialchars($user->name ?? "User") ?>
+                    </strong>
+
+                    <small>
+                        Seller
+                    </small>
+
+                </span>
+
+
+                <i class="fa-solid fa-chevron-down profile-chevron"></i>
+
+            </button>
+
+
+            <div
+                class="profile-menu"
+                id="profileMenu">
+
+                <div class="profile-menu-header">
+
+                    <strong>
+                        <?= htmlspecialchars($user->name ?? "User") ?>
+                    </strong>
+
+                    <span>
+                        <?= htmlspecialchars($user->email ?? "") ?>
+                    </span>
+
+                </div>
+
+
+                <a href="./settings.php">
+                    <i class="fa-regular fa-user"></i>
+                    Profile & Settings
+                </a>
+
+
+                <a href="./orders.php">
+                    <i class="fa-solid fa-box"></i>
+                    My Orders
+                </a>
+
+
+                <a href="./cart.php">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    Cart
+                </a>
+
+
+                <div class="profile-menu-divider"></div>
+
+
+                <a
+                    href="./logout.php"
+                    class="logout-link">
+
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    Logout
+
+                </a>
+
             </div>
 
-            <div class="account-options">
-                <ul>
-                    <li><a href="#">Profile</a></li>
-                    <li><a href="#">Settings</a></li>
-                    <li><a href="#">Help</a></li>
-                    <li class="active"><a href="#">Logout</a></li>
-                </ul>
-            </div>
-
-        </div>
-
-        <!-- help section -->
-        <div class="dropdown">
-
-            <div class="icon" id="help-icon">
-                <i class="fa-solid fa-question-circle"></i>
-                <span>Help</span>
-                <span><img src="./chevron-down.svg" class="chevron"></span>
-            </div>
-
-            <div class="help-options">
-                <ul>
-                    <li><a href="#">Help Center</a></li>
-                    <li><a href="#">Contact Support</a></li>
-                    <li><a href="#">FAQ</a></li>
-                    <li><a href="#">Report a Problem</a></li>
-                </ul>
-            </div>
-
-        </div>
-
-        <!-- cart section -->
-        <div class="dropdown">
-
-            <div class="icon" id="cart-icon">
-                <i class="fa-solid fa-cart-shopping"></i>
-                <span>Cart</span>
-                <span><img src="./chevron-down.svg" class="chevron"></span>
-            </div>
-
-            <div class="cart-options">
-                <ul>
-                    <li><a href="#">View Cart</a></li>
-                    <li><a href="#">Checkout</a></li>
-                    <li><a href="#">Order History</a></li>
-                    <li><a href="#">Track Order</a></li>
-                </ul>
-            </div>
         </div>
 
     </div>
 
 </header>
+
+
+<div
+    class="mobile-overlay"
+    id="mobileOverlay">
+</div>
