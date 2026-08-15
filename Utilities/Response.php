@@ -15,6 +15,7 @@ class Response
 
     public function jsonResponse($jsonData)
     {
+        header("Content-Type:application/json");
         http_response_code($this->staus);
         echo json_encode($jsonData);
     }
