@@ -459,7 +459,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function escapeHtml(value) {
-    const div = document.createElement("div");
+       div = document.createElement("div");
 
     div.textContent = value ?? "";
 

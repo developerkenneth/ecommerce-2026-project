@@ -781,6 +781,10 @@ body {
     height: 50px;
     gap: 30px;
 }
+.edit-actions a:hover{
+    background-color: #e85f00;
+    color: #dcfce7;
+}
 .edit-actions{
     padding: 8px 30px;
     display: flex;
