@@ -1,10 +1,16 @@
 <?php
+require_once __DIR__ . "/../vendor/autoload.php";
 
 use App\Core\Auth;
 use App\Model\Cart;
 use App\Utilities\Response;
+use Dotenv\Dotenv;
+// require vlucas dotenv
 
-require_once __DIR__ . "/../vendor/autoload.php";
+$dotenv = Dotenv::createImmutable(dirname(__DIR__, 1));
+$dotenv->load();
+
+
 
 session_start();
 
@@ -98,25 +104,8 @@ if ($reference === '') {
 
 // PAYSTACK SECRET KEY
 
+$secretKey = $_ENV['PAYSTACK_SECRET_KEY'];
 
-$secretKey = null;
-
-
-if (
-    defined('PAYSTACK_SECRET_KEY') &&
-    PAYSTACK_SECRET_KEY
-) {
-
-    $secretKey =
-        PAYSTACK_SECRET_KEY;
-}
-
-
-if (!$secretKey) {
-
-    $secretKey =
-        getenv('PAYSTACK_SECRET_KEY');
-}
 
 
 if (!$secretKey) {
@@ -156,16 +145,18 @@ try {
 
     $expectedAmount = 0;
 
+    $cartItems = (array) $cartItems;
+
 
     foreach ($cartItems as $item) {
 
         $price =
-            (float) $item->price;
+            (float) $item['price'];
 
 
         $discount =
             (float) (
-                $item->discount_percentage ?? 0
+                $item['discount_percentage'] ?? 0
             );
 
 
@@ -185,7 +176,7 @@ try {
 
 
         $quantity =
-            (int) $item->quantity;
+            (int) $item['quantity'];
 
 
         $expectedAmount +=
@@ -193,18 +184,14 @@ try {
     }
 
 
-  
+
     //  * Paystack expects amounts in
     //  * the currency subunit.
     //  *
     //  * For NGN:
     //  * ₦1 = 100 kobo.
-    
 
-    $expectedPaystackAmount =
-        (int) round(
-            $expectedAmount * 100
-        );
+
 } catch (\Exception $error) {
 
     $response->statusCode(500)->jsonResponse([
@@ -307,12 +294,7 @@ if (
     empty($paystackData['status'])
 ) {
 
-    $response->statusCode(400)->jsonResponse([
-        'success' => false,
-        'message' =>
-        $paystackData['message'] ??
-            'Payment verification failed.'
-    ]);
+    $response->statusCode(400)->jsonResponse($paystackData);
 
     exit;
 }
@@ -349,10 +331,10 @@ $transactionReference =
     ?? null;
 
 
+
+// changed from kobo to naira
 $transactionAmount =
-    (int) (
-        $transaction['amount']
-        ?? 0
+    ($transaction['amount'] / 100  ?? 0
     );
 
 
@@ -416,13 +398,13 @@ if (
 
 if (
     $transactionAmount !==
-    $expectedPaystackAmount
+    $expectedAmount
 ) {
 
     $response->statusCode(400)->jsonResponse([
         'success' => false,
         'message' =>
-        'Payment amount does not match the cart total.'
+        'Payment amount does not match the cart total.',
     ]);
 
     exit;

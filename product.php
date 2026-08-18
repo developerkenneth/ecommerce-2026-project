@@ -2,11 +2,10 @@
 
 $pageTitle = "Product Details";
 
-require_once "components/user/head.php";
+require_once "components/guest/head.php";
 
 ?>
 
-<?php include_once "components/user/header.php"; ?>
 
 <link rel="stylesheet" href="./assets/css/product.css">
 
