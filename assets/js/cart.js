@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
   const API_URL = "./api/cart.php";
+  const VERIFY_PAYMENT_URL = "./api/verify-payment.php";
 
   const cartLoading = document.getElementById("cartLoading");
   const cartError = document.getElementById("cartError");
@@ -15,58 +16,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const clearCartBtn = document.getElementById("clearCartBtn");
   const retryCartBtn = document.getElementById("retryCartBtn");
   const checkoutBtn = document.getElementById("checkoutBtn");
-  const payNowBtn = document.querySelector("#payNowBtn");
+  const payNowBtn = document.getElementById("payNowBtn");
 
-
-  async function verifyPayment(reference, items) {
-
-    const response = await fetch("/api/verify-payment.php", {
-      method: "POST",
-
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
-
-      // verify payment here
-      body: JSON.stringify({
-        items: items,
-        reference: reference
-      })
-    });
-
-    const data = await response.json();
-
-    if (data.success) {
-      console.log("Payment verified!");
-    } else {
-      console.log("Payment verification failed");
-    }
-  }
-
-  const payNow = (totalAmount, items) => {
-    const paystack = new PaystackPop();
-    paystack.newTransaction({
-      key: "pk_test_017f838286d7ca36f5626e847298d83cd143b0dd",
-      email: "customer@example.com",
-      amount: totalAmount * 100,
-      currency: "NGN",
-
-      onSuccess: (transaction) => {
-        console.log(`Payment successful ${totalAmount}`);
-        console.log("Reference:", transaction.reference);
-
-        // Send the reference to your Laravel/PHP backend
-        verifyPayment(transaction.reference, items);
-      },
-
-      onCancel: () => {
-        console.log("Payment cancelled");
-      }
-    });
-  }
+  let currentCart = null;
+  let paymentProcessing = false;
 
   loadCart();
+
+  // ==========================================
+  // LOAD CART
+  // ==========================================
 
   async function loadCart() {
     showLoading();
@@ -74,24 +33,18 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const response = await fetch(API_URL, {
         method: "GET",
+
         headers: {
           Accept: "application/json",
         },
+
         credentials: "include",
       });
 
-      const text = await response.text();
+      const data = await parseJsonResponse(response);
 
       console.log("CART API STATUS:", response.status);
-      console.log("CART API RESPONSE:", text);
-
-      let data;
-
-      try {
-        data = JSON.parse(text);
-      } catch (error) {
-        throw new Error("Cart API returned invalid JSON.");
-      }
+      console.log("CART DATA:", data);
 
       if (response.status === 401) {
         showError(data.message || "Please login to view your cart.");
@@ -103,22 +56,37 @@ document.addEventListener("DOMContentLoaded", () => {
         throw new Error(data.message || "Unable to load cart.");
       }
 
-      console.log("CART DATA:", data.cart);
+      currentCart = data.cart;
+
       renderCart(data.cart);
-
-
-
-
-      console.log(data.cart.subtotal);
-      payNowBtn.addEventListener("click", () => {
-        payNow(data.cart.subtotal, data.cart);
-      });
     } catch (error) {
       console.error("Cart loading error:", error);
 
       showError(error.message || "Something went wrong.");
     }
   }
+
+  // ==========================================
+  // SAFE JSON RESPONSE
+  // ==========================================
+
+  async function parseJsonResponse(response) {
+    const text = await response.text();
+
+    console.log("RAW API RESPONSE:", text);
+
+    try {
+      return JSON.parse(text);
+    } catch (error) {
+      console.error("PHP returned invalid JSON:", text);
+
+      throw new Error("The cart server returned an invalid response.");
+    }
+  }
+
+  // ==========================================
+  // RENDER CART
+  // ==========================================
 
   function renderCart(cart) {
     const items = Array.isArray(cart?.items) ? cart.items : [];
@@ -134,9 +102,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
       updateSummary(0, 0);
 
-      cartItemCount.textContent = "Your cart is empty";
+      if (cartItemCount) {
+        cartItemCount.textContent = "Your cart is empty";
+      }
 
-      cartProductsCount.textContent = "0 products";
+      if (cartProductsCount) {
+        cartProductsCount.textContent = "0 products";
+      }
 
       return;
     }
@@ -149,19 +121,27 @@ document.addEventListener("DOMContentLoaded", () => {
     cartItems.innerHTML = "";
 
     items.forEach((item) => {
-      const itemElement = createCartItem(item);
-
-      cartItems.appendChild(itemElement);
+      cartItems.appendChild(createCartItem(item));
     });
 
-    cartItemCount.textContent = `${totalItems} ${totalItems === 1 ? "item" : "items"
+    if (cartItemCount) {
+      cartItemCount.textContent = `${totalItems} ${
+        totalItems === 1 ? "item" : "items"
       } in your cart`;
+    }
 
-    cartProductsCount.textContent = `${items.length} ${items.length === 1 ? "product" : "products"
+    if (cartProductsCount) {
+      cartProductsCount.textContent = `${items.length} ${
+        items.length === 1 ? "product" : "products"
       }`;
+    }
 
     updateSummary(totalItems, subtotal);
   }
+
+  // ==========================================
+  // CART ITEM
+  // ==========================================
 
   function createCartItem(item) {
     const article = document.createElement("article");
@@ -195,7 +175,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <div class="cart-item-image">
 
                 <img
-                    src="${photo}"
+                    src="${escapeHtml(photo)}"
                     alt="${escapeHtml(item.name || "Product")}"
                 >
 
@@ -210,16 +190,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
                 <h3 class="cart-item-name">
-
                     ${escapeHtml(item.name || "Unnamed Product")}
-
                 </h3>
 
 
                 <p class="cart-item-brand">
-
                     ${escapeHtml(item.brand || "No brand")}
-
                 </p>
 
 
@@ -234,10 +210,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 <div class="cart-item-controls">
 
-
-                    <div
-                        class="quantity-control"
-                    >
+                    <div class="quantity-control">
 
                         <button
                             type="button"
@@ -270,7 +243,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     >
                         Remove
                     </button>
-
 
                 </div>
 
@@ -320,17 +292,22 @@ document.addEventListener("DOMContentLoaded", () => {
     return article;
   }
 
+  // ==========================================
+  // UPDATE QUANTITY
+  // ==========================================
+
   async function updateQuantity(productUuid, quantity) {
     try {
       const response = await fetch(API_URL, {
         method: "PUT",
 
+        credentials: "include",
+
         headers: {
           "Content-Type": "application/json",
+
           Accept: "application/json",
         },
-
-        credentials: "include",
 
         body: JSON.stringify({
           product_uuid: productUuid,
@@ -339,7 +316,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }),
       });
 
-      const data = await response.json();
+      const data = await parseJsonResponse(response);
 
       if (!response.ok || !data.success) {
         throw new Error(data.message || "Unable to update quantity.");
@@ -353,24 +330,29 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // ==========================================
+  // REMOVE ITEM
+  // ==========================================
+
   async function removeItem(productUuid) {
     try {
       const response = await fetch(API_URL, {
         method: "DELETE",
 
+        credentials: "include",
+
         headers: {
           "Content-Type": "application/json",
+
           Accept: "application/json",
         },
-
-        credentials: "include",
 
         body: JSON.stringify({
           product_uuid: productUuid,
         }),
       });
 
-      const data = await response.json();
+      const data = await parseJsonResponse(response);
 
       if (!response.ok || !data.success) {
         throw new Error(data.message || "Unable to remove product.");
@@ -383,6 +365,10 @@ document.addEventListener("DOMContentLoaded", () => {
       alert(error.message);
     }
   }
+
+  // ==========================================
+  // CLEAR CART
+  // ==========================================
 
   if (clearCartBtn) {
     clearCartBtn.addEventListener("click", clearCart);
@@ -398,17 +384,21 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const response = await fetch(`${API_URL}?clear=1`, {
         method: "DELETE",
+
+        credentials: "include",
+
         headers: {
           Accept: "application/json",
         },
-        credentials: "include",
       });
 
-      const data = await response.json();
+      const data = await parseJsonResponse(response);
 
       if (!response.ok || !data.success) {
         throw new Error(data.message || "Unable to clear cart.");
       }
+
+      currentCart = null;
 
       await loadCart();
     } catch (error) {
@@ -418,35 +408,212 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // ==========================================
+  // PAYMENT
+  // ==========================================
+
+  if (payNowBtn) {
+    payNowBtn.addEventListener("click", () => {
+      if (!currentCart) {
+        alert("Your cart is empty.");
+
+        return;
+      }
+
+      const total = Number(currentCart.subtotal || 0);
+
+      if (total <= 0) {
+        alert("There is nothing to pay for.");
+
+        return;
+      }
+
+      payNow(total, currentCart.items || []);
+    });
+  }
+
+  function payNow(totalAmount, items) {
+    if (paymentProcessing) {
+      return;
+    }
+
+    const paystack = new PaystackPop();
+
+    paystack.newTransaction({
+      key: "pk_test_017f838286d7ca36f5626e847298d83cd143b0dd",
+
+      email: "customer@example.com",
+
+      amount: Math.round(totalAmount * 100),
+
+      currency: "NGN",
+
+      onSuccess: async (transaction) => {
+        console.log("Payment successful:", transaction.reference);
+
+        paymentProcessing = true;
+
+        payNowBtn.disabled = true;
+
+        payNowBtn.innerHTML = `
+                        <i class="fa-solid fa-spinner fa-spin"></i>
+                        Confirming payment...
+                    `;
+
+        try {
+          await verifyPayment(transaction.reference, items);
+        } catch (error) {
+          console.error("Payment verification error:", error);
+
+          alert(error.message);
+
+          paymentProcessing = false;
+
+          payNowBtn.disabled = false;
+
+          payNowBtn.textContent = "Pay Now";
+        }
+      },
+
+      onCancel: () => {
+        console.log("Payment cancelled.");
+      },
+    });
+  }
+
+  // ==========================================
+  // VERIFY PAYMENT
+  // ==========================================
+
+  async function verifyPayment(reference, items) {
+    const response = await fetch(VERIFY_PAYMENT_URL, {
+      method: "POST",
+
+      credentials: "include",
+
+      headers: {
+        "Content-Type": "application/json",
+
+        Accept: "application/json",
+      },
+
+      body: JSON.stringify({
+        reference: reference,
+
+        items: items,
+      }),
+    });
+
+    const data = await parseJsonResponse(response);
+
+    if (!response.ok || !data.success) {
+      throw new Error(data.message || "Payment verification failed.");
+    }
+
+    /*
+     * Only clear the cart after
+     * the backend confirms payment.
+     */
+
+    await clearCartAfterPayment();
+
+    alert("Payment successful. Your cart has been cleared.");
+
+    window.location.href = "./orders.php";
+  }
+
+  // ==========================================
+  // CLEAR AFTER VERIFIED PAYMENT
+  // ==========================================
+
+  async function clearCartAfterPayment() {
+    const response = await fetch(`${API_URL}?clear=1`, {
+      method: "DELETE",
+
+      credentials: "include",
+
+      headers: {
+        Accept: "application/json",
+      },
+    });
+
+    const data = await parseJsonResponse(response);
+
+    if (!response.ok || !data.success) {
+      throw new Error(
+        data.message ||
+          "Payment was successful but the cart could not be cleared.",
+      );
+    }
+
+    currentCart = {
+      items: [],
+      total_items: 0,
+      subtotal: 0,
+    };
+
+    showEmpty();
+
+    updateSummary(0, 0);
+
+    if (cartItemCount) {
+      cartItemCount.textContent = "Your cart is empty";
+    }
+
+    if (cartProductsCount) {
+      cartProductsCount.textContent = "0 products";
+    }
+  }
+
+  // ==========================================
+  // CHECKOUT
+  // ==========================================
+
   if (checkoutBtn) {
     checkoutBtn.addEventListener("click", () => {
       window.location.href = "./checkout.php";
     });
   }
 
+  // ==========================================
+  // RETRY
+  // ==========================================
+
   if (retryCartBtn) {
     retryCartBtn.addEventListener("click", loadCart);
   }
+
+  // ==========================================
+  // UI
+  // ==========================================
 
   function showLoading() {
     showElement(cartLoading);
 
     hideElement(cartError);
+
     hideElement(emptyCart);
+
     hideElement(cartLayout);
   }
 
   function showEmpty() {
     hideElement(cartLoading);
+
     hideElement(cartError);
+
     showElement(emptyCart);
+
     hideElement(cartLayout);
   }
 
   function showError(message) {
     hideElement(cartLoading);
+
     hideElement(emptyCart);
+
     hideElement(cartLayout);
+
     showElement(cartError);
 
     if (cartErrorMessage) {
@@ -455,19 +622,15 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function showElement(element) {
-    if (!element) {
-      return;
+    if (element) {
+      element.hidden = false;
     }
-
-    element.hidden = false;
   }
 
   function hideElement(element) {
-    if (!element) {
-      return;
+    if (element) {
+      element.hidden = true;
     }
-
-    element.hidden = true;
   }
 
   function updateSummary(totalItems, subtotal) {
@@ -514,12 +677,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function escapeHtml(value) {
-       div = document.createElement("div");
+    const div = document.createElement("div");
 
     div.textContent = value ?? "";
 
     return div.innerHTML;
   }
-});
-
-
+}); 
